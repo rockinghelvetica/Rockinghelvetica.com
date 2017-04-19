@@ -405,7 +405,6 @@ window.rock = (function() {
 
 
 
-
 // Per https://github.com/WICG/EventListenerOptions/blob/gh-pages/explainer.md
 window.passiveCaptureFlag = false;
 try {
@@ -415,31 +414,13 @@ try {
 } catch(e) {}
 
 
+
 // Should cover things, per https://developer.mozilla.org/en-US/docs/Web/Events/transitionend
 window.transitionEndEventName = ('WebkitTransition' in document.documentElement.style) ? 'webkitTransitionEnd' : 'transitionend';
 
 
 
-
-
-
-//NOTES
-//(prefers-reduced-motion)
-//TODO: move loaded class states to state attribute (mutually exclusive states)
-//TODO: move where Gfy objects are retained (not attached to DOM, dummy)
-//TODO: is it a concern that duplicate items share a namespace (e.g. retaining video etc)
-//TODO check if this.paused in video before play 
-//TODO: add Promise polyfill for older browsers
-//TODO confirm use of target vs currentTarget
-//TODO: check on bug: Uncaught (in promise) DOMException: The play() request was interrupted by a call to pause().
-//TODO: touchstart
-//https://developer.mozilla.org/en-US/docs/Web/CSS/touch-action
-//window.matchMedia("(min-width: 400px)").matches
-//requestIdleCallback upgrade?
-// add promise with timeout around loadeddata to opt-in to network throttling
-// figure out if the spread operator works on samsung phones geeez
-// Represents a single Gfycat. Their API was crashy, so this is all new.
-(function(context) {
+(function(root) {
   'use strict';
   
   var supportsVideo =  !!(HTMLVideoElement && HTMLVideoElement.prototype.canPlayType);
@@ -450,13 +431,19 @@ window.transitionEndEventName = ('WebkitTransition' in document.documentElement.
     this.removeEventListener("loadeddata", firstFrame);
   }
   
-  context.Gfy = function( gfyId ) {
+  // Bind to handler, if active. Unbinding happens on pause or when played.
+  function playing(e) {
+    if(this.parentElement && this.parentElement.classList.contains("active"))
+      this.addEventListener("timeupdate", window.cases);
+  }
+    
+  root.Gfy = function( gfyId ) {
     this.id = gfyId;
     this.data = null;
     this.media = null;
   };
 
-  context.Gfy.prototype.setup = function() {      
+  root.Gfy.prototype.setup = function() {      
     if(supportsVideo) {
       var poster = document.querySelector( ".slide[data-id=" + this.id + "] img" );
       if(poster) {
@@ -470,7 +457,7 @@ window.transitionEndEventName = ('WebkitTransition' in document.documentElement.
   };
 
   
-  context.Gfy.prototype.createVideo = function( data ) {
+  root.Gfy.prototype.createVideo = function( data ) {
     var vid = document.createElement('video'),
         src = document.createElement('source');
 
@@ -510,41 +497,49 @@ window.transitionEndEventName = ('WebkitTransition' in document.documentElement.
     
     // Event for loading state
     vid.addEventListener("loadeddata", firstFrame);
+    vid.addEventListener("playing", playing);
 
     return vid;
   };
   
-  // Setup a one-event pattern to stop playing if e.g. hovered on. Check for active anyway.
-  context.Gfy.chill = function(e) {
-    this.removeEventListener("mouseout", this.chill);
-    if(this.parentElement && !this.parentElement.classList.contains("active")) this.pause();
+  
+  
+  root.Gfy.prototype.pause = function() {
+    if(this.media) {
+      this.media.removeEventListener("timeupdate", window.cases);
+      this.media.pause(); 
+    }
   }
   
-  context.Gfy.prototype.pause = function() {
-    if(this.media) this.media.pause();
-  }
   
-  context.Gfy.prototype.play = function(fleetingly) {
+  
+  root.Gfy.prototype.play = function(hover) {
     if(!this.media) {
       this.setup();
     } else if(this.media.paused) {
-      // TODO: wrap in promise
-      this.media.play();
-    }
-    
-    if(fleetingly) {
-      this.media.addEventListener("mouseout", this.chill);
+      // Don't assume browsers return promises for HTMLVideoElement.play()
+      // Muffle the warning in case we cross up pause events asynchronously.
+      var p = this.media.play();
+      if(p !== undefined) 
+        p.catch(function(ehh){ void 0; });
+    } else if(hover) {
+      // Non-active slides might be playing, and need to unbind (activation index passed as hover, 0 or 1)
+      this.media.removeEventListener("timeupdate", window.cases);
     }
   };
   
-  context.Gfy.prototype.cull = function() {
+  
+  
+  root.Gfy.prototype.cull = function() {
     var s;
+    console.log("cull " + this.id);
     if( this.media && this.media.parentNode ) {
       // In case video was still loading.
       this.media.removeEventListener("loadeddata", firstFrame);
-      this.media.removeEventListener("mouseout", this.chill);
+
       // Soundly delete the video.
-      this.media.pause();
+      // Note that pause is called on our object, in case it does more.
+      this.pause();
       this.media.src = "";
       while( s = this.media.firstChild ) {
         this.media.removeChild( s );
@@ -553,6 +548,8 @@ window.transitionEndEventName = ('WebkitTransition' in document.documentElement.
       // TODO: unbind progress listener if feature is present.
       this.media.parentElement.removeChild( this.media );
       this.media = null;
+    } else {
+      console.log("not culled in fact");
     }
   }
 })(window);
@@ -563,51 +560,7 @@ window.transitionEndEventName = ('WebkitTransition' in document.documentElement.
 
 
 
-// Manages scroll observation across mutually-exclusive view states.
-// The object is a complex EventListener which also manages related bindings.
-window.scrub = (function() {
-  'use strict';
-  
-  var target = null;
-  
-  function Scrub() {
-    
-    // Exposed properties
-    this.midpoint = -1;
 
-    // Invalidate only when resized, instead of measuring every frame.
-    // Defer measurement so as to have no side effect on first paint.
-    // MAYBE: if this makes window resizing sluggish, debounce here, too. 
-    this.invalidateMidpoint = function() {
-      this.midpoint = Math.floor( window.innerHeight / 2 );
-    };
-    
-    // Designed to handle setup & teardown by simply swapping targets (between TL:DR and verbose views).
-    Object.defineProperty(this, 'target', {
-      get: function() {
-        return target;
-      },
-      set: function( eventTarget ) {
-        if(target) {
-          target.removeEventListener("scroll", this, window.passiveCaptureFlag);
-          window.removeEventListener("resize", this.invalidateMidpoint);
-          this.invalidateMidpoint();
-        }
-        if(eventTarget) {
-          this.invalidateMidpoint();
-          target = eventTarget;
-          target.addEventListener("scroll", this, window.passiveCaptureFlag);
-          window.addEventListener("resize", this.invalidateMidpoint);
-        }
-      }
-    });
-
-    // Placeholder
-    this.handleEvent = function(e) { void 0; };
-  }; 
-  
-  return new Scrub();
-})();
 
 
 
@@ -624,25 +577,34 @@ window.slides = (function(){
   // Contains both the singular .active slide and any that have videos retained in DOM.
   var activated = [];
   
+  // Track preloading of Gfycat objects
   var preloads = 0;
   var stack = [];
   
-  // There are two behaviors where a slide plays: hover, and explicitly active.
-  // This is the view's model where slide 0 is implicitly .active
-  // Does not check for slide validity, so be mindful.
+  // There are two behaviors where a slide plays: hover, and explicitly active (click, or scroll-intersection).
+  // The 'activated' array is the view's model where slide 0 is implicitly .active
+  // The slide argument can be a string or a slide element, depending on the site mode.
+  // Does not validate slide, so be mindful.
   function setActiveSlide(slide, e) {
-    var a = activated.indexOf(slide);
-    // Shuffle to front, or prepend, and reassign variable to new length.
+    if(typeof slide === "string") {
+      slide = document.querySelector('.slide[data-id="'+ slide +'"]');
+    } else if(window.cases) {
+      // If the case controller is around, let it know that we switched.
+      window.cases.activate( slide.dataset.id );
+    }
+
+    // Shuffle to front, or prepend if not yet in array.
+    // Hover events are second-priority and insert at position 1.
+    var a = activated.indexOf(slide),
+        insertAt = (e && "mouseover" === e.type) | 0;
+
     if(a < 0) 
-      activated.unshift( slide );
+      activated.splice( insertAt, 0, slide );
     else
-      Array.prototype.push.apply( activated, activated.splice(0,a) );
+      Array.prototype.push.apply( activated, activated.splice( insertAt, a - insertAt ) );
     
-    // Invoke view update if not our scroll listener
-    if(e && e.type === "click")
-      this.render();
-    
-    return;
+    // console.log("slide inserted at…" + insertAt)
+    return insertAt;
   };
 
   
@@ -678,81 +640,62 @@ window.slides = (function(){
   }
   
   
-  
+  // Render method
   function updateSlides() {
     var a = activated.length,
         slide = activated[0];
     
     // Activated contains at least every slide that should be playing
-    // Loop through and act on state:
-    // The first element is active
-    // The second element may be played, if hovered on
-    // Further elements should be paused, or culled from DOM according to config.
-    
-    // UNLOADED gets gfy via promise, that passes back to render again
-    // LOADED slides 
-    // playing slides might be paused or culled
-    
-          // TODO: defer until touchend on mobile?
-      // TODO: use a promise?
-      //TODO: can DOM be trusted to be in sync here
-      //TODO Argument is for "fleeting" behavior i.e. hover
-      // TODO: except hover? e.g. scroll under hover
-      // Between scroll, click, and hover events can this be called a number of times in one frame? or not likely?
-      // TODO: merge into loop for V1.3
-            // TODO maybe cancel loading / pause promises etc
-    console.log("render", this);
-    
+    // Index 0 is certainly .active, and the next plays conditionally (if present, and only upon :hover)
+    // Everything else should be paused or culled, and the list trimmed down to what's left in DOM.
+    console.log( "slides update with " +activated.length);
     while ( --a >= 0 ) {
       var s = activated[a].dataset.id,
           g = this.gfys[s];
-      
+
       if(!g && a < 2) {
 
-        // Slide is unloaded, and priority. Pull item from stack, then load it.
+        // Slide is unloaded, and in playable range. 
+        // Pull item from stack, then load it via promise.
+        // User-interaction might change the state, so we assume nothing & re-render.
         var i = stack.indexOf( slide );
         if( i >= 0) {
-          // Returns promise so we commit to another render pass when loaded.
           this.load( stack.splice( i, 1 )[0] )
             .then(updateSlides.bind(this));
-        } else {
-          // Impossible, unless someone borked the DOM.
-          console.log("Impossible error. Impressive.");
         }
-        
+
       } else {
-        
         // Previously loaded, but may need state reconcilation.
         activated[a].classList.toggle("active", (a === 0));
-        
+
         // Play, pause, or cull.
-        if( a > window.rock.maxVideoElements ) {
-          // Cull anything past the allowed count.
-          g.cull();
-        } else {
+        // Cull anything past the allowed count.
         // Pause anything that isn't active or being hovered on.
-          if( a === 0 ) {
-            // The slide is either mid-promise, or loaded.
-            if(g.data) {
-              g.play();
-              // fleeting case passes "true"
-            } else {
-              console.log("Edge case, good job.");
-              // TODO: edge case where promise is mid-flight
-            }
-          } else {
-             g.pause();
+        if( a >= window.rock.maxVideoElements ) {
+          g.cull();
+        } else if(g.data) {
+          if( a === 0 || (a === 1 && activated[a].matches(":hover")) ) {
+            g.play();
+          } else { 
+            g.pause(); 
           }
-        }      
+        } else {
+          // TODO: edge case where promise is mid-flight from Gfycat          
+        }
       }
-    }
-    void (activated.length > window.rock.maxVideoElements) && activated.splice( window.rock.maxVideoElements );
+    } 
+    void activated.splice( window.rock.maxVideoElements );
+    return activated[0];
   }
   
 
   // Lazy-get the DOM
   return {
     gfys: {},
+    get active() {
+      // This remains live, unlike root.
+      return document.querySelector("#slides .slide.active") || document.querySelector("#slides .slide");
+    },
     get root() {
       // TODO: confirm this doesn't break galaxy notes etc; or, Array.apply(0, NodeList)
       stack = [...document.querySelectorAll(".slide")];
@@ -769,36 +712,137 @@ window.slides = (function(){
 
 
 
+// NOT USED IN V1.4
+// window.cases = (function(){
+//   'use strict';
+  
+//   // Matches interface of the slides controller
+//   // This component sorta "wraps" the slides controller when the site is not in TL:DR mode.
+  
+//   function setActiveCase(p, e) {
+//     // When in TLDR mode, the slide controller may message.
+//     if(typeof p === "string") {
+//       console.log("slides controller said to activate p with id " + p);
+//       //var siblings = document.querySelector( "p.active:not[data-id=" + this.id + "]");
+//       return;
+//     }
+//     // Assumptions for element case:
+//     // The search routine already ensured that this arg is not currently active before invocation.
+//     // Also, it will have a dataset.id string
+//     console.log("This is where you communicate with Slides");
+//     if(window.slides && p.dataset.id) {
+//       window.slides.activate( p.dataset.id );
+//     }
+//   }
+  
+  
+//   // When case view is on, this update still hits slides first.
+//   function updateBothViews() {
+//     var activeSlide = window.slides.render(),
+//         activeP;
+    
+//     if(activeSlide) {
+//       var id = activeSlide.dataset.id,
+//           activish = [...document.querySelectorAll('p.active, p[data-id="' + id + '"]')];
+      
+//       // The query includes any p.active plus our target, to enforce a singlular case.
+//       // For an initial string value, we carry the final element once hit.
+//       // Will output the search string if not in DOM (but …how'd you do that?)
+//       activeP = activish.reduce( function( a, p ) {
+//         var match = Boolean("string" === typeof a && p.dataset.id === a);
+//         p.classList.toggle("active", match );
+//         return (match) ? p : a;
+//       }, id);
+//     }
+//     return activeP;
+//   }
+  
+//   // Handle event bound by active video
+//   function progress( e ) {
+//     var v = e.target;
+//     var p = v.currentTime / Math.max(1, v.duration);
+//     this.progressBar.value = p;
+//   }
+
+  
+//   // Lazy-get the DOM
+//   return {
+//     get active() {
+//       // This getter remains live, unlike root.
+//       return document.querySelector("#cases p.active") || document.querySelector("#cases p[data-id]");
+//     },
+//     get root() {
+//       delete this.root;
+//       return this.root = document.getElementById('cases');
+//     },
+//     // TEMP
+//     get progressBar() {
+//       delete this.progressBar;
+//       return this.progressBar = document.querySelector('progress');
+//     },
+//     activate: setActiveCase,
+//     render: updateBothViews,
+//     handleEvent: progress
+//   }
+// })();
 
 
-// V1.2
+
+
+// Manages scroll observation across mutually-exclusive view states.
+// The object is a complex EventListener which also manages related bindings.
+window.scrub = (function() {
+  'use strict';
+  
+  var target = null;
+  
+  function Scrub() {
+    
+    // Exposed properties
+    this.midpoint = -1;
+
+    // Invalidate only when resized, instead of measuring every frame.
+    // Defer measurement so as to have no side effect on first paint.
+    // MAYBE: if this makes window resizing sluggish, debounce here, too. 
+    this.invalidateMidpoint = function() {
+      this.midpoint = Math.floor( window.innerHeight / 2 );
+    };
+    
+    // Designed to handle setup & teardown by simply swapping targets (between TL:DR and verbose views).
+    Object.defineProperty(this, 'target', {
+      get: function() {
+        return target;
+      },
+      set: function( eventTarget ) {
+        console.log("setting target", eventTarget, target);
+        if(target) {
+          target.removeEventListener("scroll", this, window.passiveCaptureFlag);
+          window.removeEventListener("resize", this.invalidateMidpoint);
+          this.invalidateMidpoint();
+        }
+        if(eventTarget) {
+          this.invalidateMidpoint();
+          target = eventTarget;
+          target.addEventListener("scroll", this, window.passiveCaptureFlag);
+          window.addEventListener("resize", this.invalidateMidpoint);
+        }
+      }
+    });
+
+    // Placeholder
+    this.handleEvent = function(e) { void 0; };
+  }; 
+  
+  return new Scrub();
+})();
+
+
+
+// V1.4
 function main() {
   
   var rAF = null;
-  
 
-  
-  
-  
-  // DESIGN
-  
-  // window.rock is the config
-  
-  // scrub object is a sort of EventHandler controller
-  // browse is called at most once per frame with the scroll event
-  // the slides object controls the view
-  // slides.activate modifies the view a lot
-  // the main loop manages the base events and rAF
-
-  // stack is a queue of unloaded slides
-  // as they are initiated, they are appended to slides.gfys
-  
-  
-  
-  // The data object creates an observer on the DOM el
-  // Active will setup if needed and play, binding to progress meter
-  // Losing active will pause and unbind
-  // Hover … does what?
   
   
   // Utility for finding our slide in event path in pointer/touch event handlers.
@@ -810,11 +854,10 @@ function main() {
   
   // Event handler callback for scroll
   // Bound from outside of scrub obj because we'll be hot-swapping it in V2.
-  var browse = function(slides, time) { 
+  function traverseView(view, time) { 
         
-    // TODO: confirm this querySelectorAll isn't too expensive for frame. Might be cacheable with tight management.
-    // Get all text and active item (fall back on first item if unselected).
-    var active = document.querySelector("#slides .slide.active") || document.querySelector("#slides .slide");
+    // This queries the DOM, but it's light-touch.
+    var active = view.active;
     
     // Goal: find midpoint intersection in fewest measurements.
     // Typically, scrolling updates are adjacent, so our search should be one or two hops
@@ -836,49 +879,43 @@ function main() {
     };
     
     // Checking target === active doesn't account for default case
-    // Hence, we compare on the DOM.    
+    // Hence, we compare on the DOM.
     if(target && !target.classList.contains("active")) {
-      slides.activate(target);
-      slides.render();
-    } 
+      view.activate(target);
+      view.render();
+    }
     
     // Next frame ready.
     rAF = null;
-    
-  }.bind( window.scrub, window.slides );
+  }
   
   
   
-  
-  
-  
+  var browse = traverseView.bind( window.scrub, window.slides );
+
   
   
   // Event: hover on slide. 
-//   document.querySelector("#slides").addEventListener("mouseover", function(e) {
-    
-//     var target = e.composedPath().find( delegatedSlide );
-
-//     console.log(target);
-    
-
-        
-
-//       } 
-//     }
-//   });
-   
-  // document.querySelector("#slides").addEventListener("touchend", function(e) {
-  //   var active = document.querySelector('#slides .active');
-  //   return active && slides[ active.dataset.id ].play(true);
-  // });
+  document.querySelector("#slides").addEventListener("mouseout", function(e) {
+    var slide = e.composedPath().find( delegatedSlide );
+    if( slide && !slide.classList.contains("active")) {
+      try { 
+        window.slides.gfys[ slide.dataset.id ].pause();
+      } catch( ehh ) { };
+    }
+  });
+  
   
   
   // Requires composedPath polyfill.
   // TODO: does not invoke render method
   var userSelectSlide = function(e) {
     var slide = e.composedPath().find( delegatedSlide );
-    if(slide) this.activate( slide, e );
+    if(slide) {
+      this.activate( slide, e );
+      this.render();
+    }
+
   }.bind(window.slides);
 
   
@@ -888,28 +925,36 @@ function main() {
   };
   
   // This setter kicks off the chain of lazy-bindings.
-  // TODO: all this is to eventually support swapping between view modes
-  // so, that's to say "document" will change to a selector signature in time to justify it all.
-  // TODO: void slides.root if not invoked here, the init behavior is …subtle.
+  // e.g. void slides.root if not used for assignment; the init behavior is …subtle.
+  
+  //OFF: 
+  //void cases.root;
   scrub.target = slides.root.ownerDocument;
   
+  
+  
+  //EVENTS
+  //TODO: constrain hover to desktop, etc.
   document.querySelector("#slides").addEventListener("click", userSelectSlide);
+  document.querySelector("#slides").addEventListener("mouseover", userSelectSlide);
 }
+
+
 
 // INIT
 document.addEventListener("DOMContentLoaded", main);
+
+
+
+// PRELOAD
 window.addEventListener("load", function() {  
+  //duplicate per number of connections
  window.slides.load(  document.getElementsByClassName('slide')[0] );
 });
 
-// TODO: on window load start pulling down gfy objects (preload)
-// loadItem( stack.shift(), true );
-// loadItem( stack.shift() );
 
 
-
-
-
+// ETC
 // Handle gently-obfuscated link.
 document.addEventListener("DOMContentLoaded", function() {
   var link = document.querySelector("a.we-hope-that-you-choke");  
@@ -928,7 +973,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 // POLYFILLS
-
 // Event.composedPath
 // Possibly normalize to add window to Safari's chain, as it does not?
 (function(E, d, w) {
