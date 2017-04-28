@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="tldr-mode">
+<html>
   <head>
     <title>Nicholas Macias, Designer</title>
     <meta name="description" content="Nicholas Macias is a designer, and so forth.">
@@ -23,6 +23,7 @@
     <style>
 
 body, html {
+  background: currentColor;
   width: 100%;
   min-height: 100%;
   border: 0;
@@ -30,31 +31,31 @@ body, html {
   padding: 0;
   box-sizing: border-box;
   position: relative;
-  
   color: #222;
   font-family: "BauWeb W01 Regular", sans-serif;
 }
 
-  
-
-
 html {
-  background: currentColor;
-  padding: 1em;
-  font-size: 2.2vw;
   overflow-y: scroll;
   overflow-x: hidden;
   height: 100vh;
-  width: 100vw;
+  width: 100%;
+  /* Override at breakpoints. */
+  font-size: 2.8vw;
+  padding: 1em;
 }
 
 body {
   height: auto;
-  background: currentColor;
   position: relative;
   text-align: left;
   width: 100%;
-  padding: 0 0 0 30vw;
+/*   overflow: hidden; */
+}
+
+main {
+  background: white;
+  padding: 12rem 0 0 30vw;
 }
 
 /* Frame elements. Should have own paint context for speed. */
@@ -83,36 +84,46 @@ body:after {
 
 /* TYPE */
 
-header {
+body > header {
+  background: white;
   position: relative;
   display: block;
-  height: 40vh;
-  min-height: 16rem;
-}
-
-footer {
-  position: relative;
-  color: #999;
-  font-size: 0.5rem;
-  padding-bottom: 1em;
+/*   TODO */
+  height: 36vh;
+  min-height: 5rem;
 }
 
 h1 {
-  position: relative;
+  position: absolute;
+  left: 0;
+  top: 0;
   margin: 0;
+  font-size: 2.4em;
   padding: 1em;
-  font-size: 2.6em;
   font-weight: normal;
   line-height: 1.2;
-  max-width: 12em;
+  width: 11em;
   opacity: 1;
   will-change: opacity;
+}
+
+hr {
+  margin: 2em 0;
+  border: none;
+  border-bottom: 1px solid #ddd;
+}
+
+footer {
+  color: gray;
+  font-size: 14px;
+  margin-top: 25vh;
+  padding: 1.5rem;
 }
 
 a {
   color: currentColor;
   background: white;
-  transition: background 0.05s, color 5s;
+  transition: background 0.05s, color 1s;
 }
 
 a:hover {
@@ -132,10 +143,94 @@ nav.actions {
   padding: 2.6rem;
 }
 
+#tldr {
+  font-family: "BauWeb W01 Regular", sans-serif;
+  -webkit-appearance: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  border: 0; 
+  cursor: zoom-out;
 
-.slide[data-state='loading'] {
-  opacity: 1;
+  /* TODO: remove */
+  position: fixed;
+  z-index: 2000;
+  bottom: 4em;
+  right: 4em;
+  font-size: 14px;
+  border-radius: 50%;
+  width: 5em;
+  height: 5em;
+  outline: none;
+  background: #FFD750;
 }
+
+#tldr:hover {
+  background: #FFC700;
+}
+
+html:not(.tldr-mode) #tldr {
+  cursor: zoom-in;
+}
+
+#tldr::-moz-focus-inner {
+  border: 0;
+  padding: 0;
+}
+
+
+
+
+#cases {
+  background: white;
+  padding: 2.8rem;
+  box-sizing: border-box;
+  overflow: hidden;
+  height: auto;
+  max-width: 24em;
+  margin: auto;
+}
+
+.active span {
+  background-position: 0.2em;
+  background-size: 0% 100%, 100% 100%;
+  background-image: linear-gradient(
+  to bottom,
+  white 1.2em,
+  gold 1.2em,
+  gold 1.26em,
+  white 1.26em),
+  linear-gradient(
+  to bottom,
+  white 1.2em,
+  #538c2b 1.2em,
+  #538c2b 1.26em,
+  white 1.26em);
+  background-repeat: no-repeat;
+/*   border-bottom: 2px solid pink; */
+/*   box-shadow: 2px 0 0 pink; */
+}
+
+em {
+  font-style: normal;
+  background: yellow;
+  mix-blend-mode: multiply;
+}
+
+/* temp */
+p {
+  min-height: 6em;
+  overflow-wrap: break-word;
+}
+
+
+
+
+/* TODO */
+/* .slide[data-state='unloaded'] {
+  opacity: 0.7;
+} */
+
+
 
 #slides img,
 #slides video { 
@@ -143,6 +238,10 @@ nav.actions {
   display: block;
   width: 100%;
   height: 100%;
+}
+
+.slide[data-state='loading'] {
+  opacity: 1;
 }
 
 #slides video + img { 
@@ -154,21 +253,17 @@ nav.actions {
 } 
 
 #slides {
+  position: absolute;
   background: white;
   overflow: visible;
   height: calc(100vh - 2rem);
   box-sizing: border-box;
-  left: 1rem;
-  top: 1rem;
-
-  /* TLDR Overrides */
-  position: absolute;
-  width: 100%;
-  top: 0;
   left: 0;
-  bottom: auto;
-  box-sizing: border-box;
+  top: 16rem;
+  width: 30vw;
 }
+
+
 
 #slides .scrollable {
   box-sizing: border-box;
@@ -181,20 +276,28 @@ nav.actions {
   transform-origin: 0 0;
   transform: scale(1.0, 1.0);
   transition: transform 0.3s ease-in;
-   
-  /* TLDR Overrides */
   position: relative;
-  height: calc((100vw - 2rem) * 0.5625);
+  height: 16.875vw;
 }
 
+.tldr-mode #slides .scrollable:after {
+  content: "END";
+  display: block;
+  height: 30vh;
+}
 
 .aspect-box {
   position: relative;
   height: 100%;
   flex: 0 0 100%;
   box-sizing: border-box;
+<<<<<<< HEAD:index.html
   background: green;
   overflow: hidden;
+=======
+  overflow: hidden;
+  background: #0077C8;
+>>>>>>> reorg:source/index.html
 }
 
 .aspected {
@@ -215,23 +318,52 @@ nav.actions {
 }
 
 
+html:not(.tldr-mode) .aspect-portrait {
+    min-height: 237.037037%;
+    flex-basis: 100%;
+  } 
+
+html:not(.tldr-mode) .aspect-complement {
+    min-height: 172.972973%;
+  }
+  
 
 
 
-html.tldr-mode {
+
+
+
+/* html.tldr-mode {
   width: 100vw;
-}
+} */
 
 html.tldr-mode body {
   
 }
 
 .tldr-mode #slides {
+  /* TLDR Overrides */
+  width: 100%;
+  top: 0;
+  bottom: auto;
+  position: relative;
+  overflow: visible;
+}
 
+/* TODO: fix this */
+.tldr-mode main,
+.tldr-mode footer,
+.tldr-mode #cases {
+  display: none;
+}
+
+.tldr-mode #slides {
+  height: auto;  
 }
 
 .tldr-mode #slides .scrollable {
-
+  /* TLDR Overrides */
+  height: calc((100vw - 2rem) * 0.5625);
 }
 
 .tldr-mode.enter #slides .scrollable {
@@ -244,40 +376,12 @@ html.tldr-mode body {
 
 
 
-
-@media (max-width: 670px) {
-  html {
-    font-size: 24px;
-  }
-  h1 {
-    font-size: 1.4em;
-  }
-  nav.actions {
-    padding: 1.4em;
-  }
-  
-/* TODO: exception for device orientation? items are too tall… */
-  
-  .aspect-portrait {
-    min-height: 237.037037%;
-    flex-basis: 100%;
-  } 
-  .aspect-complement {
-    min-height: 172.972973%;
-  }
-  
-}
-
-
-
-
-
-@media (min-width: 1800px) {
+/* TODO: set max */
+@media (min-width: 1600px) {
   html {
     font-size: 42px;
   }
 }
-
 
 @media (hover: hover) {
   html::-webkit-scrollbar {
@@ -292,16 +396,231 @@ html.tldr-mode body {
 }
 
 
+/* TODO: complete these */
+/* Color overrides for slide placeholders. */ 
+.slide[data-id],
+.slide[data-id="GlisteningAcidicIbizanhound"] {
+  background-color: #FFD750;
+}
+
+
+h3 {
+  font-size: 1em;
+  font-weight: normal;
+}
+
+aside p {
+  font-size: 0.5rem;
+  line-height: 1.4;
+  border-left: 1px solid lightgrey;
+  padding-left: 1em;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 
+
+
+NOTES 
+padding on mobile is 0.8rem at 6.25vw
+
+*/
+
+@media (orientation: portrait) {
+  h1 {
+    width: 9em;
+  }
+}
+
+@media (min-width: 670px) {
+  html:not(.tldr-mode) #slides.snapped {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    transition: transform 0.5s ease-in;
+  }
+}
+
+@media (max-width: 670px) {
+  html {
+    font-size: 6.25vw;
+    padding: 0.8em;
+  }
+  
+  main {
+    padding: 0;
+  }
+  
+  h1 {
+    position: relative;
+    text-rendering: optimizeLegibility;
+    font-size: 1.8rem;
+    padding: 1.2rem;
+    left: auto;
+    width: auto;
+  }
+  
+  #cases {
+    padding: 1.2rem;
+  }
+  
+  nav.actions {
+    padding: 1.4em;
+  }
+  
+/* TODO: exception for device orientation? items are too tall… */
+  
+  .aspect-portrait {
+    min-height: 237.037037%;
+    flex-basis: 100%;
+  } 
+  .aspect-complement {
+    min-height: 172.972973%;
+  }
+  
+  
+  
+  html:not(.tldr-mode) #slides .scrollable {
+    height: 25vw;
+  }
+ 
+  
+/*   body:after,body:before {
+    display: none!important;
+  } */
+
+  
+
+  html:not(.tldr-mode) #slides,
+  html:not(.tldr-mode) #tldr {
+    position: fixed;
+    width: calc((25vw - 16px) / 0.5625);
+    height: 25vw;
+    top: calc(100vh - 37.5vw);
+    left: auto;
+    right: 2em;
+/*     bottom: 2em; */
+  }
+  
+  html:not(.tldr-mode) #tldr {
+    background: transparent;
+    padding: 0;
+    font-size: 8vw;
+    line-height; 25vw;
+    color: white;
+    display: block;
+    text-align: center;
+    border-radius: 0;
+    margin: 0 -0.45em ; 
+/*     TODO wtf is this margin */
+  }
+  
+  
+  html:not(.tldr-mode) #slides {
+    will-change: opacity;
+    opacity: 1;
+    transform: translate3d(0,0,0); 
+    overflow: hidden;
+    box-shadow: 0 6px 30px rgba(0,0,0,0.3);
+    border: 8px solid currentColor;
+    pointer-events: none;
+  }
+  
+  html:not(.tldr-mode) .slide:not(.active) {
+  display: none;
+  }
+  
+}
+
+@media (orientation: landscape) {
+  body:after,body:before {
+    display: none!important;
+  }
+}
+
+
+/* Set a floor size. */
+@media (max-width: 300px) { 
+  html {
+    font-size: 16px!important;
+  }
+}
+
+
     </style>
   </head>
   <body>
-<section id="slides">
+<main role="main">
   <header>
-    <h1><strong>Nicholas Macias</strong> is a designer, and so&nbsp;forth.</h1>
-    <nav class="actions"><a class="we-hope-that-you-choke" data-path="file/d/0B-rWGeqvXzRWdUt4WEl4NDdhMTg/view" href="https://drive.google.com/" target="_blank">Resume</a></nav>
+    <h1><strong>Nicholas Macias</strong> is&nbsp;a designer, and so&nbsp;forth.</h1>
   </header>
+  <section id="cases">
+    <p>I make cross-screen products that audiences experience billions of times per year. <a class="we-hope-that-you-choke" data-path="file/d/0B-rWGeqvXzRWdUt4WEl4NDdhMTg/view" href="https://drive.google.com/" target="_blank">Resume</a>.</p>
+<hr>
+    <p data-id="SpanishKindlyEland"><span><em>Watch/Read</em>: I led the first large-scale redesign of IGN’s editorial content since the advent of autoplay video, responsive web principles, and modern search/social behaviors.</span></p>
+<p data-id="AdoredAgreeableFireant"><span>In 2013, articles with video equivalents converted readers to watchers at a ratio of around 0.26 video views. This new design lifted the typical video view rate of a news package by +130%.</span></p>
+<p data-id="ClearFrayedChinesecrocodilelizard"><span>I brought a reader-style feed to every article, after discovering how few people ever saw the editorial programming.</span></p>
+    <p data-id="GlisteningAcidicIbizanhound"><span>Spreadsheets overtook the number of <s>Photoshop</s>Sketch files on my Mac one day.</span></p>
+<p data-id="RigidAdmiredFinch"><span>Edge cases are the rule in editorial and user-generated content design. Working with nearly twenty years’ worth of content led my team to developing “live” workflows in our early design process.</span></p>
+<p data-id="SophisticatedNaiveFlyingfish"><span>At the behest of engineering leadership, we supported a new, junior development team with a comprehensive, waterfall-style approach to documenting the new article design. It’s an 80 page love letter to Agile.</span></p>
+<hr>
+    <p data-id="IckyKindFish"><span>If IGN's VR-themed special edition for <em>Snapchat Discover</em> was an American prime-time show, it would have topped the Nielsen ratings the night of June 15, 2016 pulling in 4.5MM US viewers. We earned 11MM+ global uniques in 24 hours. Working closely with Snapchat's editorial director for tips on how to speak to the general Discover audience, our adaptability was rewarded with more than 100 million individual content views.</span></p>
+    <hr>
+<p data-id="MadeupMediocreGemsbuck"><span><em>Ad Portaling:</em> I developed a new ad technology that increased IGN’s viewable display yield by +27% in 2015. We coined it “portaling” for its allusion to the mechanism in the groundbreaking video game, Portal.</span></p>
+<p data-id="ElectricFarawayHarvestmouse"><span>My team launched a digital TV station inside three months’ time, and if that sounds ludicrous, please know that it was. Named <em>IGN1</em>, the goal was to meet evolving watcher behaviors with a new tune-in experience, and we did that by stitching together both live & VOD programming into a 24/7 streaming channel. 
+</span></p>
+<hr>
+<p>Data and experimentation are critical to approaching an already-popular product, and not only to justify roadmap attention. Editorially-ranked lists, on topics like Sci-Fi Movies, or Video Game Moments, are so reliably popular for IGN that a 2008-vintage design had carried forward for many, many years.</p>
+<p data-id="WhiteVagueBluejay"><span>Adapting this desktop-only <em>Top 100 List</em> content to its first mobile expression was a sheer project rationale, circa 2016, but a key story buried in the high pageview performance was how user counts were merely comparable to an above-average article or review.
+</span></p>
+<p data-id="FailingAllCrustacean"><span>Where Half-Life 2 features in a list as well as over 1500 articles across IGN, I recognized opportunity. Our strategy prioritized search and editorial promotion with an evergreen IA and a new visual branding system, braced by the insight that incremental reach held 6-10X returns over other experience factors.</span></p>
+<p data-id="OptimisticOldfashionedHairstreakbutterfly"><span>A related experiment, from 2014, had established that removing explicit pagination could grow yield by +56%, while also improving the integrity of the reading experience.</span></p>
+<hr>
+<p data-id="ClosedIllCaecilian"><span>As much as a <em>video player</em> might represent a “solved” UX problem, today, this wasn't always so. Building players from scratch in 2003 tought me some tricks.</span></p>
+<p data-id="SkinnyGrouchyAnt"><span>Gamers are prone to pausing & rewatching moments in videos, and sharing screenshots from such. When designing IGN’s pause state, we made sure to keep the frame clear.</span></p>
+    <hr>
+<p>IGN reached a total of 8.5MM OTT app installs (Q2 2016) across platforms, including game consoles and set-top devices like AppleTV. My direct contribution varies by project, but all followed a key product strategy: these walled gardens are not like the Web, and IGN needed to invest the platform owners in our success.</p>
+<p data-id="GiddyImpureHoneyeater"><span>One example of that strategy in action is the Playstation Store link in the IGN PS4 app, which was the first of its kind.</span></p>
+<p data-id="TautHappygoluckyBronco"><span>IGN’s Xbox One App was designed (with Wondersauce) to launch directly into video playback.</span></p>
+<p data-id="GrouchyEnchantingKomododragon"><span>Snap panels are an exclusive feature of the Xbox One, and our app aligned well with Microsoft’s competitive story.</span></p>
+<p data-id="BrightHastyIbis"><span>Designing for NUI requirements (detail).</span></p>
+    <hr>
+       <p>At times, product goals are better achieved by internal organization, tools, and process optimizations.
+    </p>
+<p data-id="SlushyShowyBluefish"><span>To increase the sales value of IGN's live event coverage, I frequently directed (and occasionally animated) the visual branding of our event coverage, seen in many hundreds of millions of video views.</span></p>
+<p data-id="ShockedMeanLangur"><span>A designer on my team, Alex, wanted to learn React, and I saw an opportunity to solve a live video production bottleneck. Based on my prototype, Alex designed and built a browser-based tool that allowed a producer to quickly edit motion graphics overlays, output to an inexpensive chroma key switch.</span></p>
+    <hr>
+    <p data-id="WetMeekChevrotain"><span><em>GamerMetrics</em> translates IGN traffic into a weighted score, a bespoke metric named the GPT, which is used by large publishers and media agencies to help plan their campaigns. I made sure it was friendly to screenshotting for pitch decks.</span></p>
+<p data-id="UnsteadyImpossibleElephant"><span>IGN commissions a bi-annual audience segmentation study from Ipsos. In addition to informing product & editorial efforts, the report has significant marketability with media agencies & client businesses.Way back in 2010, I adapted the underlying research into an infographic-style website, launching the story of gamers as influencers (more than introverts). I created everything, starting with the authoring the report.</span></p>
+    <hr>
+<p data-id="TanOptimalCat"><span>I was told that I helped Typekit get funded, as they used my (webfont-enabled) site design for Jax Vineyards as a favorite slide in their pitch deck.</span></p>
+    <hr>
+<p data-id="DistortedUltimateConch"><span>I designed an episodic digital companion product for a new children’s show, the WotWots, when Weta Workshop was originally pitching it to major U.S. television networks. Because kids are cognitively diverse—and sometimes, moody—I met the challenge of designing for 2–4 year-old attention spans with a persistent age control that could dynamically adapt the experience.</span></p>
+<p>Before iPads, parents were wary of ceding their sole home computer for endless periods. I put parents back in control of the schedule through a clear “goodbye” sequence that saw the WotWots tucked-in, then shipped off to outer space.</p>
+<hr>
+<aside>
+<h3>I am expert in the following topics enough to at least change the vibe of any midsize house party:</h3>
+<p>Prototyping, After Effects, why the kids love Snapchat, vanilla javascript (and, natch, memory leaks), JIRA, content strategy, Google Analytics nuances, viewability metrics, HLS video delivery, executive FOMO, Microsoft Xbox app development, deep linking, targeted advertising, long-distance cycling, responsive web design, autoplay interactions, exotic HTML5 inputs, email newsletter QA, performant rendering in browsers, A/B experimentation in Optimizely, the importance of nomenclature, commenting systems, Google Query Language, audience segmentation studies, webfont delivery, visual identity design, and startup business models before their time.</p>
+</aside>
+  </section>
+  <footer>
+    <p>©2017 Nicholas Macias and respective clients.</p>
+  </footer>
+</main>
+<section id="slides">
   <div class="scrollable">
-<div class="slide aspect-box" data-state="unloaded" data-id="SpanishKindlyEland">
+<div class="slide aspect-box active" data-state="unloaded" data-id="SpanishKindlyEland">
     <img src="https://thumbs.gfycat.com/SpanishKindlyEland-thumb100.jpg" srcset="https://thumbs.gfycat.com/SpanishKindlyEland-thumb100.jpg 100w,https://thumbs.gfycat.com/SpanishKindlyEland-mobile.jpg 640w,https://thumbs.gfycat.com/SpanishKindlyEland-poster.jpg 1920w" sizes="(max-width: 480px) 320px, 100vw">
   </div>
 <div class="slide aspect-box" data-state="unloaded" data-id="AdoredAgreeableFireant">
@@ -328,11 +647,11 @@ html.tldr-mode body {
 <div class="slide aspect-box" data-state="unloaded" data-id="ElectricFarawayHarvestmouse">
     <img src="https://thumbs.gfycat.com/ElectricFarawayHarvestmouse-thumb100.jpg" srcset="https://thumbs.gfycat.com/ElectricFarawayHarvestmouse-thumb100.jpg 100w,https://thumbs.gfycat.com/ElectricFarawayHarvestmouse-mobile.jpg 640w,https://thumbs.gfycat.com/ElectricFarawayHarvestmouse-poster.jpg 1920w" sizes="(max-width: 480px) 320px, 100vw">
   </div>
-<div class="slide aspect-box" data-state="unloaded" data-id="FailingAllCrustacean">
-    <img src="https://thumbs.gfycat.com/FailingAllCrustacean-thumb100.jpg" srcset="https://thumbs.gfycat.com/FailingAllCrustacean-thumb100.jpg 100w,https://thumbs.gfycat.com/FailingAllCrustacean-mobile.jpg 640w,https://thumbs.gfycat.com/FailingAllCrustacean-poster.jpg 1920w" sizes="(max-width: 480px) 320px, 100vw">
-  </div>
 <div class="slide aspect-box" data-state="unloaded" data-id="WhiteVagueBluejay">
     <img src="https://thumbs.gfycat.com/WhiteVagueBluejay-thumb100.jpg" srcset="https://thumbs.gfycat.com/WhiteVagueBluejay-thumb100.jpg 100w,https://thumbs.gfycat.com/WhiteVagueBluejay-mobile.jpg 640w,https://thumbs.gfycat.com/WhiteVagueBluejay-poster.jpg 1920w" sizes="(max-width: 480px) 320px, 100vw">
+  </div>
+<div class="slide aspect-box" data-state="unloaded" data-id="FailingAllCrustacean">
+    <img src="https://thumbs.gfycat.com/FailingAllCrustacean-thumb100.jpg" srcset="https://thumbs.gfycat.com/FailingAllCrustacean-thumb100.jpg 100w,https://thumbs.gfycat.com/FailingAllCrustacean-mobile.jpg 640w,https://thumbs.gfycat.com/FailingAllCrustacean-poster.jpg 1920w" sizes="(max-width: 480px) 320px, 100vw">
   </div>
   <div class="slide aspect-box" data-state="unloaded" data-id="OptimisticOldfashionedHairstreakbutterfly">
     <img src="https://thumbs.gfycat.com/OptimisticOldfashionedHairstreakbutterfly-thumb100.jpg" srcset="https://thumbs.gfycat.com/OptimisticOldfashionedHairstreakbutterfly-thumb100.jpg 100w,https://thumbs.gfycat.com/OptimisticOldfashionedHairstreakbutterfly-mobile.jpg 640w,https://thumbs.gfycat.com/OptimisticOldfashionedHairstreakbutterfly-poster.jpg 1920w" sizes="(max-width: 480px) 320px, 100vw">
@@ -343,6 +662,9 @@ html.tldr-mode body {
   <div class="slide aspect-box aspect-portrait" data-state="unloaded" data-id="SkinnyGrouchyAnt">
     <img src="https://thumbs.gfycat.com/SkinnyGrouchyAnt-thumb100.jpg" srcset="https://thumbs.gfycat.com/SkinnyGrouchyAnt-thumb100.jpg 75w,https://thumbs.gfycat.com/SkinnyGrouchyAnt-mobile.jpg 640w,https://thumbs.gfycat.com/SkinnyGrouchyAnt-poster.jpg 810w" sizes="(max-width: 480px) 320px, 100vw">
   </div>
+  <div class="slide aspect-box" data-state="unloaded" data-id="GiddyImpureHoneyeater">
+    <img src="https://thumbs.gfycat.com/GiddyImpureHoneyeater-thumb100.jpg" srcset="https://thumbs.gfycat.com/GiddyImpureHoneyeater-thumb100.jpg 100w,https://thumbs.gfycat.com/GiddyImpureHoneyeater-mobile.jpg 640w,https://thumbs.gfycat.com/GiddyImpureHoneyeater-poster.jpg 1920w" sizes="(max-width: 480px) 320px, 100vw">
+  </div>
   <div class="slide aspect-box" data-state="unloaded" data-id="TautHappygoluckyBronco">
     <img src="https://thumbs.gfycat.com/TautHappygoluckyBronco-thumb100.jpg" srcset="https://thumbs.gfycat.com/TautHappygoluckyBronco-thumb100.jpg 100w,https://thumbs.gfycat.com/TautHappygoluckyBronco-mobile.jpg 640w,https://thumbs.gfycat.com/TautHappygoluckyBronco-poster.jpg 1920w" sizes="(max-width: 480px) 320px, 100vw">
   </div>
@@ -351,9 +673,6 @@ html.tldr-mode body {
   </div>
   <div class="slide aspect-box aspect-portrait" data-state="unloaded" data-id="BrightHastyIbis">
     <img src="https://thumbs.gfycat.com/BrightHastyIbis-thumb100.jpg" srcset="https://thumbs.gfycat.com/BrightHastyIbis-thumb100.jpg 75w,https://thumbs.gfycat.com/BrightHastyIbis-mobile.jpg 640w,https://thumbs.gfycat.com/BrightHastyIbis-poster.jpg 810w" sizes="(max-width: 480px) 320px, 100vw">
-  </div>
-  <div class="slide aspect-box" data-state="unloaded" data-id="GiddyImpureHoneyeater">
-    <img src="https://thumbs.gfycat.com/GiddyImpureHoneyeater-thumb100.jpg" srcset="https://thumbs.gfycat.com/GiddyImpureHoneyeater-thumb100.jpg 100w,https://thumbs.gfycat.com/GiddyImpureHoneyeater-mobile.jpg 640w,https://thumbs.gfycat.com/GiddyImpureHoneyeater-poster.jpg 1920w" sizes="(max-width: 480px) 320px, 100vw">
   </div>
   <div class="slide aspect-box" data-state="unloaded" data-id="SlushyShowyBluefish">
     <img src="https://thumbs.gfycat.com/SlushyShowyBluefish-thumb100.jpg" srcset="https://thumbs.gfycat.com/SlushyShowyBluefish-thumb100.jpg 100w,https://thumbs.gfycat.com/SlushyShowyBluefish-mobile.jpg 640w,https://thumbs.gfycat.com/SlushyShowyBluefish-poster.jpg 1920w" sizes="(max-width: 480px) 320px, 100vw">
@@ -367,21 +686,21 @@ html.tldr-mode body {
   <div class="slide aspect-box" data-state="unloaded" data-id="UnsteadyImpossibleElephant">
     <img src="https://thumbs.gfycat.com/UnsteadyImpossibleElephant-thumb100.jpg" srcset="https://thumbs.gfycat.com/UnsteadyImpossibleElephant-thumb100.jpg 100w,https://thumbs.gfycat.com/UnsteadyImpossibleElephant-mobile.jpg 640w,https://thumbs.gfycat.com/UnsteadyImpossibleElephant-poster.jpg 1920w" sizes="(max-width: 480px) 320px, 100vw">
   </div>
-  <div class="slide aspect-box" data-state="unloaded" data-id="TalkativeConventionalEuropeanfiresalamander">
+<!--   <div class="slide aspect-box" data-state="unloaded" data-id="TalkativeConventionalEuropeanfiresalamander">
     <img src="https://thumbs.gfycat.com/TalkativeConventionalEuropeanfiresalamander-thumb100.jpg" srcset="https://thumbs.gfycat.com/TalkativeConventionalEuropeanfiresalamander-thumb100.jpg 100w,https://thumbs.gfycat.com/TalkativeConventionalEuropeanfiresalamander-mobile.jpg 640w,https://thumbs.gfycat.com/TalkativeConventionalEuropeanfiresalamander-poster.jpg 1920w" sizes="(max-width: 480px) 320px, 100vw">
-  </div>
+  </div> -->
   <div class="slide aspect-box" data-state="unloaded" data-id="TanOptimalCat">
     <img src="https://thumbs.gfycat.com/TanOptimalCat-thumb100.jpg" srcset="https://thumbs.gfycat.com/TanOptimalCat-thumb100.jpg 100w,https://thumbs.gfycat.com/TanOptimalCat-mobile.jpg 640w,https://thumbs.gfycat.com/TanOptimalCat-poster.jpg 1920w" sizes="(max-width: 480px) 320px, 100vw">
   </div>
   <div class="slide aspect-box" data-state="unloaded" data-id="DistortedUltimateConch">
     <img src="https://thumbs.gfycat.com/DistortedUltimateConch-thumb100.jpg" srcset="https://thumbs.gfycat.com/DistortedUltimateConch-thumb100.jpg 100w,https://thumbs.gfycat.com/DistortedUltimateConch-mobile.jpg 640w,https://thumbs.gfycat.com/DistortedUltimateConch-poster.jpg 1920w" sizes="(max-width: 480px) 320px, 100vw">
   </div>
-</div>  
-<!--   <footer>
-    <p>©2017 Nicholas Macias</p>
-  </footer> -->
+</div>
   </div>
 </section>
+<nav>
+  <button type="button" id="tldr">TL:DR</button>
+</nav>
       <script>
 window.rock = (function() {
   'use strict';
@@ -513,7 +832,7 @@ window.transitionEndEventName = ('WebkitTransition' in document.documentElement.
   }
   
   
-  
+  // Play handles setup, too, by relying on autoplay.
   root.Gfy.prototype.play = function(hover) {
     if(!this.media) {
       this.setup();
@@ -649,7 +968,7 @@ window.slides = (function(){
     // Activated contains at least every slide that should be playing
     // Index 0 is certainly .active, and the next plays conditionally (if present, and only upon :hover)
     // Everything else should be paused or culled, and the list trimmed down to what's left in DOM.
-    console.log( "slides update with " +activated.length);
+    // console.log( "slides update with " +activated.length);
     while ( --a >= 0 ) {
       var s = activated[a].dataset.id,
           g = this.gfys[s];
@@ -689,7 +1008,39 @@ window.slides = (function(){
     return activated[0];
   }
   
-
+  
+  
+  function focus(target) {
+    // Center in view,
+    if(target && target.parentElement && !window.matchMedia("(max-width: 670px)").matches && this.root.classList.contains("snapped")) {
+      var rect = target.getBoundingClientRect(),
+          y = target.parentElement.getBoundingClientRect().top;
+     
+      y += (1 * window.scrub.midpoint - rect.top - (rect.height/2));
+      
+      // Does not go positive in viewport.
+      this.root.style.transform = "translate3d(0," + Math.min(y,0) + "px,0)";
+    } else {
+      this.root.style.transform = "";
+      //window.scrollBy({ top: 100, left: 0, behavior: 'smooth' });
+      //e.target.scrollIntoView();
+    }
+  }
+  
+  
+  
+  function reset() {
+    // Cull everything video-wise
+    Object.keys(this.gfys).forEach(function(gfys, g) {
+      gfys[g].cull();
+    }.bind(null, this.gfys));
+    // And, reset .active slide(s)
+    [...document.querySelectorAll(".slide .active, p.active")].forEach(function(a) {
+      a.classList.remove("active");
+    });
+  }
+  
+  
   // Lazy-get the DOM
   return {
     gfys: {},
@@ -705,7 +1056,9 @@ window.slides = (function(){
     },
     activate: setActiveSlide,
     load: loadGfyObject,
-    render: updateSlides
+    render: updateSlides,
+    reset: reset,
+    focus: focus
   }
 })();
 
@@ -714,78 +1067,79 @@ window.slides = (function(){
 
 
 // NOT USED IN V1.4
-// window.cases = (function(){
-//   'use strict';
+window.cases = (function(){
+  'use strict';
   
-//   // Matches interface of the slides controller
-//   // This component sorta "wraps" the slides controller when the site is not in TL:DR mode.
+  // Matches interface of the slides controller
+  // This component sorta "wraps" the slides controller when the site is not in TL:DR mode.
   
-//   function setActiveCase(p, e) {
-//     // When in TLDR mode, the slide controller may message.
-//     if(typeof p === "string") {
-//       console.log("slides controller said to activate p with id " + p);
-//       //var siblings = document.querySelector( "p.active:not[data-id=" + this.id + "]");
-//       return;
-//     }
-//     // Assumptions for element case:
-//     // The search routine already ensured that this arg is not currently active before invocation.
-//     // Also, it will have a dataset.id string
-//     console.log("This is where you communicate with Slides");
-//     if(window.slides && p.dataset.id) {
-//       window.slides.activate( p.dataset.id );
-//     }
-//   }
+  function setActiveCase(p, e) {
+    // When in TLDR mode, the slide controller may message.
+    if(typeof p === "string") {
+      console.log("when exiting the slide should sync to " + p);
+      //var siblings = document.querySelector( "p.active:not[data-id=" + this.id + "]");
+      return;
+    }
+    // Assumptions for element case:
+    // The search routine already ensured that this arg is not currently active before invocation.
+    // Also, it will have a dataset.id string
+    if(window.slides && p.dataset.id) {
+      window.slides.activate( p.dataset.id );
+    }
+  }
   
   
-//   // When case view is on, this update still hits slides first.
-//   function updateBothViews() {
-//     var activeSlide = window.slides.render(),
-//         activeP;
+  // When case view is on, this update still hits slides first.
+  function updateBothViews() {
+    var activeSlide = window.slides.render(),
+        activeP;
     
-//     if(activeSlide) {
-//       var id = activeSlide.dataset.id,
-//           activish = [...document.querySelectorAll('p.active, p[data-id="' + id + '"]')];
+    if(activeSlide) {
+      var id = activeSlide.dataset.id,
+          activish = [...document.querySelectorAll('p.active, p[data-id="' + id + '"]')];
       
-//       // The query includes any p.active plus our target, to enforce a singlular case.
-//       // For an initial string value, we carry the final element once hit.
-//       // Will output the search string if not in DOM (but …how'd you do that?)
-//       activeP = activish.reduce( function( a, p ) {
-//         var match = Boolean("string" === typeof a && p.dataset.id === a);
-//         p.classList.toggle("active", match );
-//         return (match) ? p : a;
-//       }, id);
-//     }
-//     return activeP;
-//   }
+      // The query includes any p.active plus our target, to enforce a singlular case.
+      // For an initial string value, we carry the final element once hit.
+      // Will output the search string if not in DOM (but …how'd you do that?)
+      activeP = activish.reduce( function( a, p ) {
+        var match = Boolean("string" === typeof a && p.dataset.id === a);
+        p.classList.toggle("active", match );
+        return (match) ? p : a;
+      }, id);
+      window.slides.focus(activeSlide);
+    }
+    return activeP;
+  }
   
-//   // Handle event bound by active video
-//   function progress( e ) {
-//     var v = e.target;
-//     var p = v.currentTime / Math.max(1, v.duration);
-//     this.progressBar.value = p;
-//   }
+  // Handle event bound by active video
+  function progress( e ) {
+    var v = e.target;
+    var a = document.querySelector("#cases p.active span");
+    var p = 100 * v.currentTime / Math.max(1, v.duration);
+    if(a) a.style.backgroundSize = p + "% 100%, 100% 100%";
+  }
 
   
-//   // Lazy-get the DOM
-//   return {
-//     get active() {
-//       // This getter remains live, unlike root.
-//       return document.querySelector("#cases p.active") || document.querySelector("#cases p[data-id]");
-//     },
-//     get root() {
-//       delete this.root;
-//       return this.root = document.getElementById('cases');
-//     },
-//     // TEMP
-//     get progressBar() {
-//       delete this.progressBar;
-//       return this.progressBar = document.querySelector('progress');
-//     },
-//     activate: setActiveCase,
-//     render: updateBothViews,
-//     handleEvent: progress
-//   }
-// })();
+  // Lazy-get the DOM
+  return {
+    get active() {
+      // This getter remains live, unlike root.
+      return document.querySelector("#cases p.active") || document.querySelector("#cases p[data-id]");
+    },
+    get root() {
+      delete this.root;
+      return this.root = document.getElementById('cases');
+    },
+    // TEMP
+    get progressBar() {
+      delete this.progressBar;
+      return this.progressBar = document.querySelector('progress');
+    },
+    activate: setActiveCase,
+    render: updateBothViews,
+    handleEvent: progress
+  }
+})();
 
 
 
@@ -879,6 +1233,11 @@ function main() {
       target = target[traversalMethod];
     };
     
+    // Update snap threshold
+    // TODO: consider CSS alternative if supported
+    var snap = Boolean(window.cases.root.getBoundingClientRect().top <= 0);
+    window.slides.root.classList.toggle("snapped", snap);
+    
     // Checking target === active doesn't account for default case
     // Hence, we compare on the DOM.
     if(target && !target.classList.contains("active")) {
@@ -893,6 +1252,7 @@ function main() {
   
   
   var browse = traverseView.bind( window.scrub, window.slides );
+  var read = traverseView.bind( window.scrub, window.cases );
 
   
   
@@ -922,15 +1282,14 @@ function main() {
   
   
   scrub.handleEvent = function(e) {
-    return !rAF && (rAF = requestAnimationFrame( browse ));
+    return !rAF && (rAF = requestAnimationFrame( read ));
   };
   
   // This setter kicks off the chain of lazy-bindings.
   // e.g. void slides.root if not used for assignment; the init behavior is …subtle.
   
-  //OFF: 
-  //void cases.root;
-  scrub.target = slides.root.ownerDocument;
+  void slides.root;
+  scrub.target = cases.root.ownerDocument;
   
   
   
@@ -938,6 +1297,45 @@ function main() {
   //TODO: constrain hover to desktop, etc.
   document.querySelector("#slides").addEventListener("click", userSelectSlide);
   document.querySelector("#slides").addEventListener("mouseover", userSelectSlide);
+  //TODO: refactor if keeping
+  window.addEventListener("keydown", function(e) {
+    console.log(e.key);
+    if(e.key === "Escape") {
+      window.slides.reset();
+      event.preventDefault();
+    }
+  }, true);
+  
+  // TEMP
+  document.querySelector("button").addEventListener("click", function(e) {
+    var tldr = document.documentElement.classList.contains("tldr-mode");
+    
+    if(tldr) {
+      console.log('installing cases');
+      document.documentElement.classList.remove("tldr-mode");
+      this.innerText = "TL:DR";
+      scrub.handleEvent = function(e) {
+        return !rAF && (rAF = requestAnimationFrame( read ));
+      };
+      scrub.target = cases.root.ownerDocument;
+    } else {
+      console.log('installing slides');
+      document.documentElement.classList.add("tldr-mode");
+      this.innerText = "READ";
+      scrub.handleEvent = function(e) {
+        return !rAF && (rAF = requestAnimationFrame( browse ));
+      };
+      scrub.target = slides.root.ownerDocument;
+    }
+    
+    //SETUP:
+    // set handler (e.g. bound to slides view)
+    // set target (document or scrolling div)
+    // swap by changing both (if needed)
+    //scrub.target = slides.root.ownerDocument
+    // TODO: quiet down there, videos
+    
+  });
 }
 
 
@@ -951,6 +1349,16 @@ document.addEventListener("DOMContentLoaded", main);
 window.addEventListener("load", function() {  
   //duplicate per number of connections
  window.slides.load(  document.getElementsByClassName('slide')[0] );
+  
+ 
+  
+ var mobileSize = window.matchMedia("(max-width: 670px)");
+ 
+  mobileSize.addListener(function(mql){
+    if(mql.matches)
+      window.slides.root.style.transform = "";
+  });
+ 
 });
 
 
