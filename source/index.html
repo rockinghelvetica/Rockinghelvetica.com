@@ -949,10 +949,24 @@ window.slides = (function(){
     // Upon resolution, a new slide may be prefetched
     // This moderates how many begin in parallel.
     preloads++;
-  
-    return jsonpPromise('https://gfycat.com/cajax/get/' + name)
-      .then(success)
-      .catch(function(err) { 
+    
+    return fetch('./api/some.json')
+      .then(function(response) {
+        if (response.status !== 200) {
+          console.log('Looks like there was a problem. Status Code: ' +
+            response.status);
+          return;
+        }
+
+        // Examine the text in the response
+        response.json().then(function(data) {
+          console.log(data);
+          
+          //success
+          
+          
+        });
+      }).catch(function(err) {
         // WELLLLL
         console.log(err);
         // TODO: unset loading
@@ -1420,34 +1434,6 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 })([Element.prototype, CharacterData.prototype, DocumentType.prototype]);
 
-
-/* Roughly from http://stackoverflow.com/a/22780569/141363 */
-(function(global) {
-  'use strict';
-  if (!global.Promise) {
-    throw 'Promise API not available. Mistakes were made.';
-  }
-  global["jsonpPromise"] = (function() {
-    return function(url) {
-      return new Promise(function(resolve, reject) {
-        var callbackName = 'json_promise_' + Math.round(100000 * Math.random()),
-            script = document.createElement('script');
-
-        script.src = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'callback=' + callbackName;
-        script.onerror = reject;
-        
-        global[callbackName] = function (GLOBAL, s, f, data) {
-          // Cleanup
-          GLOBAL(data);
-          document.head.removeChild(s);
-          delete this[f];
-        }.bind(global, resolve, script, callbackName);
-        // Fire
-        document.head.appendChild(script);
-      });
-    };
-  })();
-}( window ));
       </script>
   </body>
 </html>
