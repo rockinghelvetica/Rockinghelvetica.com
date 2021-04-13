@@ -950,7 +950,7 @@ window.slides = (function(){
     // This moderates how many begin in parallel.
     preloads++;
     
-    return fetch('./api/some.json')
+    return fetch('https://api.gfycat.com/v1/gfycats/' + name)
       .then(function(response) {
         if (response.status !== 200) {
           console.log('Looks like there was a problem. Status Code: ' +
