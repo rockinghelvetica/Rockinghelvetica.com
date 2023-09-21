@@ -146,13 +146,10 @@ nav.actions {
 
 #tldr {
   font-family: "BauWeb W01 Regular", sans-serif;
-  -webkit-appearance: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
+  appearance: none;
+  user-select: none;
   border: 0; 
   cursor: zoom-out;
-
-  /* TODO: remove */
   position: fixed;
   z-index: 2000;
   bottom: 4em;
@@ -207,8 +204,6 @@ html:not(.tldr-mode) #tldr {
   #538c2b 1.26em,
   white 1.26em);
   background-repeat: no-repeat;
-/*   border-bottom: 2px solid pink; */
-/*   box-shadow: 2px 0 0 pink; */
 }
 
 em {
@@ -217,7 +212,6 @@ em {
   mix-blend-mode: multiply;
 }
 
-/* temp */
 p {
   min-height: 6em;
   overflow-wrap: break-word;
@@ -264,8 +258,6 @@ p {
   width: 30vw;
 }
 
-
-
 #slides .scrollable {
   box-sizing: border-box;
   width: 100%;
@@ -292,13 +284,8 @@ p {
   height: 100%;
   flex: 0 0 100%;
   box-sizing: border-box;
-<<<<<<< HEAD:index.html
-  background: green;
-  overflow: hidden;
-=======
   overflow: hidden;
   background: #0077C8;
->>>>>>> reorg:source/index.html
 }
 
 .aspected {
@@ -318,7 +305,6 @@ p {
   flex: 1 1 57.2916667%;
 }
 
-
 html:not(.tldr-mode) .aspect-portrait {
     min-height: 237.037037%;
     flex-basis: 100%;
@@ -327,20 +313,6 @@ html:not(.tldr-mode) .aspect-portrait {
 html:not(.tldr-mode) .aspect-complement {
     min-height: 172.972973%;
   }
-  
-
-
-
-
-
-
-/* html.tldr-mode {
-  width: 100vw;
-} */
-
-html.tldr-mode body {
-  
-}
 
 .tldr-mode #slides {
   /* TLDR Overrides */
@@ -416,15 +388,6 @@ aside p {
   border-left: 1px solid lightgrey;
   padding-left: 1em;
 }
-
-
-
-
-
-
-
-
-
 
 
 
@@ -518,7 +481,7 @@ padding on mobile is 0.8rem at 6.25vw
     background: transparent;
     padding: 0;
     font-size: 8vw;
-    line-height; 25vw;
+    line-height: 25vw;
     color: white;
     display: block;
     text-align: center;
@@ -527,8 +490,7 @@ padding on mobile is 0.8rem at 6.25vw
 /*     TODO wtf is this margin */
   }
   
-  
-  html:not(.tldr-mode) #slides {
+html:not(.tldr-mode) #slides {
     will-change: opacity;
     opacity: 1;
     transform: translate3d(0,0,0); 
@@ -536,9 +498,9 @@ padding on mobile is 0.8rem at 6.25vw
     box-shadow: 0 6px 30px rgba(0,0,0,0.3);
     border: 8px solid currentColor;
     pointer-events: none;
-  }
+}
   
-  html:not(.tldr-mode) .slide:not(.active) {
+html:not(.tldr-mode) .slide:not(.active) {
   display: none;
   }
   
@@ -702,6 +664,47 @@ padding on mobile is 0.8rem at 6.25vw
 <nav>
   <button type="button" id="tldr">TL:DR</button>
 </nav>
+<script>
+//2023 means faking the Gfycat API
+
+//some API items might need manual overrides because the assets have unique requirements
+let gfyAPI = {
+  IckyKindFish: {
+    "gfyItem": {
+      "webmUrl": "https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_10000k,q_auto:best,vc_vp8/v1695325712/rockinghelvetica.com/IckyKindFish.webm"
+    }
+  }
+}
+
+function getDefaultGfyItem(id) {
+  return {
+    "gfyItem": {
+        "gfyId": id,
+        "gfyName": id,
+        "webmUrl": `https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/${id}.webm`,
+        "mp4Url": `https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_10000k,q_auto:best,vc_h264/v1695325712/rockinghelvetica.com/${id}.mp4`,
+        "mobileUrl": `https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/${id}.mp4`,
+        "thumb100PosterUrl": `https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/${id}.jpg`,
+        "mobilePosterUrl": `https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/${id}.jpg`,
+        "posterUrl": `https://res.cloudinary.com/dxlyd7sac/video/upload/v1695325712/rockinghelvetica.com/${id}.jpg`
+      }
+  };
+}
+
+function ripGfyAPI(id) {
+  if (gfyAPI[id]) {
+    return {
+      "gfyItem": {
+        ...getDefaultGfyItem(id).gfyItem,
+        ...gfyAPI[id].gfyItem
+      }
+    };
+  } else {
+    return getDefaultGfyItem(id);
+  }
+}
+
+</script>
       <script>
 window.rock = (function() {
   'use strict';
