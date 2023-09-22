@@ -59,7 +59,10 @@ main {
   padding: 12rem 0 0 30vw;
 }
 
-/* Frame elements. Should have own paint context for speed. */
+/* 
+  Frame elements. Should have own paint context for speed. 
+  When in landscape orientation this gets killed; that wasn't applied in 2017 on desktop ah!
+*/
 body:before, 
 body:after {
   content: "";
@@ -248,13 +251,13 @@ p {
 } 
 
 #slides {
-  position: absolute;
+  position: sticky;
+  top: 16rem;
   background: white;
   overflow: visible;
   height: calc(100vh - 2rem);
   box-sizing: border-box;
   left: 0;
-  top: 16rem;
   width: 30vw;
 }
 
@@ -395,13 +398,13 @@ aside p {
 
 /* 
 
-NOTES 
+NOTES (2017)
 padding on mobile is 0.8rem at 6.25vw
 
 NOTES (2023)
 when snapped there is a 1rem margin I can't explain except that maybe in the past
 the elements did something else with the border? Like it always had a border 
-and then i took it off later?
+and then i took it off later? AHHHH. Desktop learned about landscape orientation!
 
 */
 
@@ -411,15 +414,17 @@ and then i took it off later?
   }
 }
 
-@media (min-width: 670px) {
+/* Changed the top to be 0 because we were seeing a gap on desktop new since 2018 */
+/* @media (min-width: 670px) {
   html:not(.tldr-mode) #slides.snapped {
     position: fixed;
     top: 0rem;
     left: 1rem;
     transition: transform 0.5s ease-in;
   }
-}
+} */
 
+/* Mobile sizes */
 @media (max-width: 670px) {
   html {
     font-size: 6.25vw;
@@ -464,11 +469,6 @@ and then i took it off later?
   }
  
   
-/*   body:after,body:before {
-    display: none!important;
-  } */
-
-  
 
   html:not(.tldr-mode) #slides,
   html:not(.tldr-mode) #tldr {
@@ -510,7 +510,9 @@ html:not(.tldr-mode) .slide:not(.active) {
   
 }
 
-@media (orientation: landscape) {
+
+/* 2023 Notes: this now applies to desktop oops, added a height rule */
+@media (orientation: landscape) and (max-height: 900px) {
   body:after,body:before {
     display: none!important;
   }
@@ -1097,11 +1099,13 @@ window.slides = (function(){
     return activated[0];
   }
   
-  
-  
-  function focus(target) {
-    // Center in view,
-    if(target && target.parentElement && !window.matchMedia("(max-width: 670px)").matches && this.root.classList.contains("snapped")) {
+  function focus() {
+    let remInPixels = parseFloat(getComputedStyle(document.documentElement).fontSize);
+    let threshold = 16 * remInPixels;
+
+    if (target && target.parentElement && !window.matchMedia("(max-width: 670px)").matches && window.scrollY > threshold) {
+      // The page is scrolled past the threshold to snap the Slides (sticky).
+      // Bring slide into focus area
       var rect = target.getBoundingClientRect(),
           y = target.parentElement.getBoundingClientRect().top;
      
@@ -1110,12 +1114,11 @@ window.slides = (function(){
       // Does not go positive in viewport.
       this.root.style.transform = "translate3d(0," + Math.min(y,0) + "px,0)";
     } else {
+      // The page is not scrolled past the threshold.
       this.root.style.transform = "";
-      //window.scrollBy({ top: 100, left: 0, behavior: 'smooth' });
-      //e.target.scrollIntoView();
-    }
+   }
   }
-  
+    
   
   
   function reset() {
@@ -1154,8 +1157,6 @@ window.slides = (function(){
 
 
 
-
-// NOT USED IN V1.4
 window.cases = (function(){
   'use strict';
   
@@ -1177,6 +1178,13 @@ window.cases = (function(){
     }
   }
   
+  // Added in 2023: refactored out JS-based sticky container for CSS but need this for other logic
+  function isStuck() {
+    let rect = this.root.getBoundingClientRect();
+    let offsetParentRect = this.root.offsetParent.getBoundingClientRect();
+    return rect.top <= offsetParentRect.top;
+  }
+
   
   // When case view is on, this update still hits slides first.
   function updateBothViews() {
@@ -1342,8 +1350,8 @@ function main() {
     
     // Update snap threshold
     // TODO: consider CSS alternative if supported
-    var snap = Boolean(window.cases.root.getBoundingClientRect().top <= 0);
-    window.slides.root.classList.toggle("snapped", snap);
+    // var snap = Boolean(window.cases.root.getBoundingClientRect().top <= 0);
+    // window.slides.root.classList.toggle("snapped", snap);
     
     // Checking target === active doesn't account for default case
     // Hence, we compare on the DOM.
