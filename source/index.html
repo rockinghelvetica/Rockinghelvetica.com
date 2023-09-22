@@ -395,9 +395,13 @@ aside p {
 
 /* 
 
-
 NOTES 
 padding on mobile is 0.8rem at 6.25vw
+
+NOTES (2023)
+when snapped there is a 1rem margin I can't explain except that maybe in the past
+the elements did something else with the border? Like it always had a border 
+and then i took it off later?
 
 */
 
@@ -410,7 +414,7 @@ padding on mobile is 0.8rem at 6.25vw
 @media (min-width: 670px) {
   html:not(.tldr-mode) #slides.snapped {
     position: fixed;
-    top: 1rem;
+    top: 0rem;
     left: 1rem;
     transition: transform 0.5s ease-in;
   }
@@ -1290,10 +1294,27 @@ function main() {
     return (Node.ELEMENT_NODE === el.nodeType && el.classList.contains("slide"));
   } 
 
+  /*
   
+    2023 update:
+    - fix scrolling behavior but also modernize
+    - does traverse view work?
+  
+  
+  */
   
   // Event handler callback for scroll
   // Bound from outside of scrub obj because we'll be hot-swapping it in V2.
+  /*
+    2023 code review NOTES: this existed before intersection observers
+    it relies on there being an active slide/case text (defaults to first item) 
+    and then it picks a traversal method based on whether the element top is above or below 
+    the midpoint of the viewport. WHere the top is below it looks up (wastes a cycle looking at active)
+    but if it's above it looks down
+
+    the code either breaks with target being the slide under midpoint or empty
+
+  */
   function traverseView(view, time) { 
         
     // This queries the DOM, but it's light-touch.
@@ -1308,6 +1329,7 @@ function main() {
     
     while( target ) {
       var r = target.getBoundingClientRect();
+      // Terminate if target is hitting the midpoint
       if( r.top < this.midpoint && r.bottom > this.midpoint ) break; 
       // Terminate with no hit when we've exceeded the direction, but not intersecting.
       if(( r.bottom > this.midpoint && traversalMethod === "nextElementSibling") 
