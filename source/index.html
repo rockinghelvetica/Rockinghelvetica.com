@@ -1099,7 +1099,7 @@ window.slides = (function(){
     return activated[0];
   }
   
-  function focus() {
+  function focus(target) {
     let remInPixels = parseFloat(getComputedStyle(document.documentElement).fontSize);
     let threshold = 16 * remInPixels;
 
