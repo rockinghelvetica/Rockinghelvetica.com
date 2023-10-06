@@ -58,7 +58,8 @@ main {
   background: white;
   padding: 12rem 0 0 30vw;
   display: flex;
-  flex-direction: column;
+  flex-direction: row-reverse;
+  flex-wrap: wrap;
 }
 
 /* 
@@ -97,6 +98,7 @@ body > header {
 /*   TODO */
   height: 36vh;
   min-height: 5rem;
+  flex-basis: 100%;
 }
 
 h1 {
@@ -124,6 +126,8 @@ footer {
   font-size: 14px;
   margin-top: 25vh;
   padding: 1.5rem;
+  flex: 2;
+  flex-basis: 100%;
 }
 
 a {
@@ -268,6 +272,7 @@ p {
   box-sizing: border-box;
   left: 0;
   width: 30vw;
+  flex: 1;
 }
 
 #slides .scrollable {
@@ -455,6 +460,7 @@ and then i took it off later? AHHHH. Desktop learned about landscape orientation
   
   #cases {
     padding: 1.2rem;
+    flex: 1;
   }
   
   nav.actions {
