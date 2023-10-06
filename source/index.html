@@ -896,6 +896,8 @@ window.transitionEndEventName = ('WebkitTransition' in document.documentElement.
 
     vid.setAttribute('playsinline', '');
     vid.setAttribute('muted', 'true');
+    // Chrome autoplay policy seems to skip the DOM attribute now?
+    vid.muted = true;
     vid.className = 'gfy-video';
     vid.autoplay = true;
     vid.loop = true;
