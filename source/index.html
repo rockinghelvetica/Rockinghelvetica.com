@@ -62,6 +62,10 @@ main {
   flex-wrap: wrap;
 }
 
+main > header {
+  flex-basis: 100%;
+}
+
 /* 
   Frame elements. Should have own paint context for speed. 
   When in landscape orientation this gets killed; that wasn't applied in 2017 on desktop ah!
@@ -195,6 +199,7 @@ html:not(.tldr-mode) #tldr {
   height: auto;
   max-width: 24em;
   margin: auto;
+  flex: 1;
 }
 
 .active span {
@@ -273,6 +278,7 @@ p {
   left: 0;
   width: 30vw;
   flex: 1;
+  align-self: flex-start;
 }
 
 #slides .scrollable {
