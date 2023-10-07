@@ -6,7 +6,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="preload" href="/css/194b518d-0a71-426a-848d-b9a5413fb9da.woff2" as="font">
+    <link rel="preload" href="/css/194b518d-0a71-426a-848d-b9a5413fb9da.woff2" as="font" crossorigin>
     <style>
         @font-face {
         font-family: "Bau";
@@ -56,10 +56,20 @@ body {
 
 main {
   background: white;
-  padding: 12rem 0 0 30vw;
+  padding: 12rem 0 0 0;
+  display: flex;
+  flex-direction: row-reverse;
+  flex-wrap: wrap;
 }
 
-/* Frame elements. Should have own paint context for speed. */
+main > header {
+  flex-basis: 100%;
+}
+
+/* 
+  Frame elements. Should have own paint context for speed. 
+  When in landscape orientation this gets killed; that wasn't applied in 2017 on desktop ah!
+*/
 body:before, 
 body:after {
   content: "";
@@ -92,6 +102,7 @@ body > header {
 /*   TODO */
   height: 36vh;
   min-height: 5rem;
+  flex-basis: 100%;
 }
 
 h1 {
@@ -119,6 +130,8 @@ footer {
   font-size: 14px;
   margin-top: 25vh;
   padding: 1.5rem;
+  flex: 2;
+  flex-basis: 100%;
 }
 
 a {
@@ -186,6 +199,7 @@ html:not(.tldr-mode) #tldr {
   height: auto;
   max-width: 24em;
   margin: auto;
+  flex: 1;
 }
 
 .active span {
@@ -227,6 +241,7 @@ p {
 
 
 
+
 #slides img,
 #slides video { 
   object-fit: cover;
@@ -247,15 +262,23 @@ p {
   display: none;
 } 
 
+/* New in 2023 patch */
+#sticky-container {
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+}
+
 #slides {
-  position: absolute;
+  position: sticky;
+  top: 0;
   background: white;
   overflow: visible;
   height: calc(100vh - 2rem);
   box-sizing: border-box;
   left: 0;
-  top: 16rem;
   width: 30vw;
+  transition: transform 0.5s ease-in;
 }
 
 #slides .scrollable {
@@ -315,16 +338,19 @@ html:not(.tldr-mode) .aspect-complement {
   }
 
 .tldr-mode #slides {
-  /* TLDR Overrides */
   width: 100%;
   top: 0;
   bottom: auto;
   position: relative;
   overflow: visible;
+  transform: none !important;
 }
 
-/* TODO: fix this */
-.tldr-mode main,
+.tldr-mode main {
+  padding: 0;
+}
+
+.tldr-mode header,
 .tldr-mode footer,
 .tldr-mode #cases {
   display: none;
@@ -395,9 +421,13 @@ aside p {
 
 /* 
 
-
-NOTES 
+NOTES (2017)
 padding on mobile is 0.8rem at 6.25vw
+
+NOTES (2023)
+when snapped there is a 1rem margin I can't explain except that maybe in the past
+the elements did something else with the border? Like it always had a border 
+and then i took it off later? AHHHH. Desktop learned about landscape orientation!
 
 */
 
@@ -407,15 +437,18 @@ padding on mobile is 0.8rem at 6.25vw
   }
 }
 
-@media (min-width: 670px) {
+/* Changed the top to be 0 because we were seeing a gap on desktop new since 2018 */
+/* @media (min-width: 670px) {
   html:not(.tldr-mode) #slides.snapped {
     position: fixed;
-    top: 1rem;
+    top: 0rem;
     left: 1rem;
     transition: transform 0.5s ease-in;
   }
-}
+} */
 
+
+/* Mobile sizes */
 @media (max-width: 670px) {
   html {
     font-size: 6.25vw;
@@ -437,6 +470,7 @@ padding on mobile is 0.8rem at 6.25vw
   
   #cases {
     padding: 1.2rem;
+    flex: 1;
   }
   
   nav.actions {
@@ -459,11 +493,6 @@ padding on mobile is 0.8rem at 6.25vw
     height: 25vw;
   }
  
-  
-/*   body:after,body:before {
-    display: none!important;
-  } */
-
   
 
   html:not(.tldr-mode) #slides,
@@ -506,7 +535,9 @@ html:not(.tldr-mode) .slide:not(.active) {
   
 }
 
-@media (orientation: landscape) {
+
+/* 2023 Notes: this now applies to desktop oops, added a height rule */
+@media (orientation: landscape) and (max-height: 900px) {
   body:after,body:before {
     display: none!important;
   }
@@ -534,7 +565,7 @@ html:not(.tldr-mode) .slide:not(.active) {
     <p data-id="SpanishKindlyEland"><span><em>Watch/Read</em>: I led the first large-scale redesign of IGN’s editorial content since the advent of autoplay video, responsive web principles, and modern search/social behaviors.</span></p>
 <p data-id="AdoredAgreeableFireant"><span>In 2013, articles with video equivalents converted readers to watchers at a ratio of around 0.26 video views. This new design lifted the typical video view rate of a news package by +130%.</span></p>
 <p data-id="ClearFrayedChinesecrocodilelizard"><span>I brought a reader-style feed to every article, after discovering how few people ever saw the editorial programming.</span></p>
-    <p data-id="GlisteningAcidicIbizanhound"><span>Spreadsheets overtook the number of <s>Photoshop</s>Sketch files on my Mac one day.</span></p>
+    <p data-id="GlisteningAcidicIbizanhound"><span>Spreadsheets overtook the number of <s>Photoshop</s><s>Sketch</s>Figma files on my Mac one day.</span></p>
 <p data-id="RigidAdmiredFinch"><span>Edge cases are the rule in editorial and user-generated content design. Working with nearly twenty years’ worth of content led my team to developing “live” workflows in our early design process.</span></p>
 <p data-id="SophisticatedNaiveFlyingfish"><span>At the behest of engineering leadership, we supported a new, junior development team with a comprehensive, waterfall-style approach to documenting the new article design. It’s an 80 page love letter to Agile.</span></p>
 <hr>
@@ -577,162 +608,164 @@ html:not(.tldr-mode) .slide:not(.active) {
 <p>Prototyping, After Effects, why the kids love Snapchat, vanilla javascript (and, natch, memory leaks), JIRA, content strategy, Google Analytics nuances, viewability metrics, HLS video delivery, executive FOMO, Microsoft Xbox app development, deep linking, targeted advertising, long-distance cycling, responsive web design, autoplay interactions, exotic HTML5 inputs, email newsletter QA, performant rendering in browsers, A/B experimentation in Optimizely, the importance of nomenclature, commenting systems, Google Query Language, audience segmentation studies, webfont delivery, visual identity design, and startup business models before their time.</p>
 </aside>
   </section>
+<div id="sticky-container">
+  <section id="slides">
+    <div class="scrollable">
+  <div class="slide aspect-box active" data-state="unloaded" data-id="SpanishKindlyEland">
+    <img
+      src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/SpanishKindlyEland.jpg"
+      srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/SpanishKindlyEland.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695322094/rockinghelvetica.com/SpanishKindlyEland.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/SpanishKindlyEland.jpg 1920w"
+      sizes="(max-width: 480px) 320px, 100vw">
+  </div>
+  <div class="slide aspect-box" data-state="unloaded" data-id="AdoredAgreeableFireant">
+    <img
+      src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/AdoredAgreeableFireant.jpg"
+      srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/AdoredAgreeableFireant.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695322094/rockinghelvetica.com/AdoredAgreeableFireant.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/AdoredAgreeableFireant.jpg 1920w"
+      sizes="(max-width: 480px) 320px, 100vw">
+  </div>
+  <div class="slide aspect-box aspect-portrait" data-state="unloaded" data-id="ClearFrayedChinesecrocodilelizard">
+    <img
+      src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/ClearFrayedChinesecrocodilelizard.jpg"
+      srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/ClearFrayedChinesecrocodilelizard.jpg 75w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695322094/rockinghelvetica.com/ClearFrayedChinesecrocodilelizard.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/ClearFrayedChinesecrocodilelizard.jpg 810w"
+      sizes="(max-width: 480px) 320px, 100vw">
+  </div>
+  <div class="slide aspect-box aspect-complement" data-state="unloaded" data-id="GlisteningAcidicIbizanhound">
+    <img
+      src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/GlisteningAcidicIbizanhound.jpg"
+      srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/GlisteningAcidicIbizanhound.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/GlisteningAcidicIbizanhound.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/GlisteningAcidicIbizanhound.jpg 1110w"
+      sizes="(max-width: 480px) 320px, 100vw">
+  </div>
+  <div class="slide aspect-box" data-state="unloaded" data-id="RigidAdmiredFinch">
+    <img
+      src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/RigidAdmiredFinch.jpg"
+      srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/RigidAdmiredFinch.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/RigidAdmiredFinch.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/RigidAdmiredFinch.jpg 1920w"
+      sizes="(max-width: 480px) 320px, 100vw">
+  </div>
+  <div class="slide aspect-box" data-state="unloaded" data-id="SophisticatedNaiveFlyingfish">
+    <img
+      src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/SophisticatedNaiveFlyingfish.jpg"
+      srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/SophisticatedNaiveFlyingfish.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/SophisticatedNaiveFlyingfish.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/SophisticatedNaiveFlyingfish.jpg 1920w"
+      sizes="(max-width: 480px) 320px, 100vw">
+  </div>
+  <div class="slide aspect-box" data-state="unloaded" data-id="IckyKindFish">
+    <img
+      src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/IckyKindFish.jpg"
+      srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/IckyKindFish.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/IckyKindFish.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/IckyKindFish.jpg 1920w"
+      sizes="(max-width: 480px) 320px, 100vw">
+  </div>
+  <div class="slide aspect-box" data-state="unloaded" data-id="MadeupMediocreGemsbuck">
+    <img
+      src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/MadeupMediocreGemsbuck.jpg"
+      srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/MadeupMediocreGemsbuck.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/MadeupMediocreGemsbuck.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/MadeupMediocreGemsbuck.jpg 1920w"
+      sizes="(max-width: 480px) 320px, 100vw">
+  </div>
+  <div class="slide aspect-box" data-state="unloaded" data-id="ElectricFarawayHarvestmouse">
+    <img
+      src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/ElectricFarawayHarvestmouse.jpg"
+      srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/ElectricFarawayHarvestmouse.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/ElectricFarawayHarvestmouse.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/ElectricFarawayHarvestmouse.jpg 1920w"
+      sizes="(max-width: 480px) 320px, 100vw">
+  </div>
+  <div class="slide aspect-box" data-state="unloaded" data-id="WhiteVagueBluejay">
+    <img
+      src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/WhiteVagueBluejay.jpg"
+      srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/WhiteVagueBluejay.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/WhiteVagueBluejay.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/WhiteVagueBluejay.jpg 1920w"
+      sizes="(max-width: 480px) 320px, 100vw">
+  </div>
+  <div class="slide aspect-box" data-state="unloaded" data-id="FailingAllCrustacean">
+    <img
+      src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/FailingAllCrustacean.jpg"
+      srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/FailingAllCrustacean.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/FailingAllCrustacean.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/FailingAllCrustacean.jpg 1920w"
+      sizes="(max-width: 480px) 320px, 100vw">
+  </div>
+  <div class="slide aspect-box" data-state="unloaded" data-id="OptimisticOldfashionedHairstreakbutterfly">
+    <img
+      src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/OptimisticOldfashionedHairstreakbutterfly.jpg"
+      srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/OptimisticOldfashionedHairstreakbutterfly.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/OptimisticOldfashionedHairstreakbutterfly.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/OptimisticOldfashionedHairstreakbutterfly.jpg 1920w"
+      sizes="(max-width: 480px) 320px, 100vw">
+  </div>
+  <div class="slide aspect-box aspect-complement" data-state="unloaded" data-id="ClosedIllCaecilian">
+    <img
+      src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/ClosedIllCaecilian.jpg"
+      srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/ClosedIllCaecilian.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/ClosedIllCaecilian.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/ClosedIllCaecilian.jpg 1110w"
+      sizes="(max-width: 480px) 320px, 100vw">
+  </div>
+  <div class="slide aspect-box aspect-portrait" data-state="unloaded" data-id="SkinnyGrouchyAnt">
+    <img
+      src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/SkinnyGrouchyAnt.jpg"
+      srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/SkinnyGrouchyAnt.jpg 75w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/SkinnyGrouchyAnt.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/SkinnyGrouchyAnt.jpg 810w"
+      sizes="(max-width: 480px) 320px, 100vw">
+  </div>
+  <div class="slide aspect-box" data-state="unloaded" data-id="GiddyImpureHoneyeater">
+    <img
+      src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/GiddyImpureHoneyeater.jpg"
+      srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/GiddyImpureHoneyeater.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/GiddyImpureHoneyeater.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/GiddyImpureHoneyeater.jpg 1920w"
+      sizes="(max-width: 480px) 320px, 100vw">
+  </div>
+  <div class="slide aspect-box" data-state="unloaded" data-id="TautHappygoluckyBronco">
+    <img
+      src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/TautHappygoluckyBronco.jpg"
+      srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/TautHappygoluckyBronco.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/TautHappygoluckyBronco.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/TautHappygoluckyBronco.jpg 1920w"
+      sizes="(max-width: 480px) 320px, 100vw">
+  </div>
+  <div class="slide aspect-box aspect-complement" data-state="unloaded" data-id="GrouchyEnchantingKomododragon">
+    <img
+      src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/com/GrouchyEnchantingKomododragon.jpg"
+      srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/com/GrouchyEnchantingKomododragon.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/GrouchyEnchantingKomododragon.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/GrouchyEnchantingKomododragon.jpg 1110w"
+      sizes="(max-width: 480px) 320px, 100vw">
+  </div>
+  <div class="slide aspect-box aspect-portrait" data-state="unloaded" data-id="BrightHastyIbis">
+    <img
+      src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695332013/rockinghelvetica.com/BrightHastyIbis.jpg"
+      srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695332013/rockinghelvetica.com/BrightHastyIbis.jpg 75w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695332013/rockinghelvetica.com/BrightHastyIbis.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695332013/rockinghelvetica.com/BrightHastyIbis.jpg 810w"
+      sizes="(max-width: 480px) 320px, 100vw">
+  </div>
+  <div class="slide aspect-box" data-state="unloaded" data-id="SlushyShowyBluefish">
+    <img
+      src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/SlushyShowyBluefish.jpg"
+      srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/SlushyShowyBluefish.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/SlushyShowyBluefish.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/SlushyShowyBluefish.jpg 1920w"
+      sizes="(max-width: 480px) 320px, 100vw">
+  </div>
+  <div class="slide aspect-box" data-state="unloaded" data-id="ShockedMeanLangur">
+    <img
+      src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/ShockedMeanLangur.jpg"
+      srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/ShockedMeanLangur.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/ShockedMeanLangur.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/ShockedMeanLangur.jpg 1920w"
+      sizes="(max-width: 480px) 320px, 100vw">
+  </div>
+  <div class="slide aspect-box" data-state="unloaded" data-id="WetMeekChevrotain">
+    <img
+      src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/WetMeekChevrotain.jpg"
+      srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/WetMeekChevrotain.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/WetMeekChevrotain.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/WetMeekChevrotain.jpg 1920w"
+      sizes="(max-width: 480px) 320px, 100vw">
+  </div>
+  <div class="slide aspect-box" data-state="unloaded" data-id="UnsteadyImpossibleElephant">
+    <img
+      src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/UnsteadyImpossibleElephant.jpg"
+      srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/UnsteadyImpossibleElephant.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/UnsteadyImpossibleElephant.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/UnsteadyImpossibleElephant.jpg 1920w"
+      sizes="(max-width: 480px) 320px, 100vw">
+  </div>
+  <!--   <div class="slide aspect-box" data-state="unloaded" data-id="TalkativeConventionalEuropeanfiresalamander">
+      <img src="https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/TalkativeConventionalEuropeanfiresalamander.jpg" srcset="https://thumbs.gfycat.com/TalkativeConventionalEuropeanfiresalamander.jpg 100w,https://thumbs.gfycat.com/TalkativeConventionalEuropeanfiresalamander.jpg 640w,https://thumbs.gfycat.com/TalkativeConventionalEuropeanfiresalamander-poster.jpg 1920w" sizes="(max-width: 480px) 320px, 100vw">
+    </div> -->
+  <div class="slide aspect-box" data-state="unloaded" data-id="TanOptimalCat">
+    <img
+      src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/TanOptimalCat.jpg"
+      srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/TanOptimalCat.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/TanOptimalCat.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/TanOptimalCat.jpg 1920w"
+      sizes="(max-width: 480px) 320px, 100vw">
+  </div>
+  <div class="slide aspect-box" data-state="unloaded" data-id="DistortedUltimateConch">
+    <img
+      src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/DistortedUltimateConch.jpg"
+      srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/DistortedUltimateConch.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/DistortedUltimateConch.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/DistortedUltimateConch.jpg 1920w"
+      sizes="(max-width: 480px) 320px, 100vw">
+  </div>
+  </div>
+    </div>
+  </section>
+</div>
   <footer>
     <p>©2017 Nicholas Macias and respective clients.</p>
   </footer>
-</main>
-<section id="slides">
-  <div class="scrollable">
-<div class="slide aspect-box active" data-state="unloaded" data-id="SpanishKindlyEland">
-  <img
-    src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/SpanishKindlyEland.jpg"
-    srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/SpanishKindlyEland.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695322094/rockinghelvetica.com/SpanishKindlyEland.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/SpanishKindlyEland.jpg 1920w"
-    sizes="(max-width: 480px) 320px, 100vw">
-</div>
-<div class="slide aspect-box" data-state="unloaded" data-id="AdoredAgreeableFireant">
-  <img
-    src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/AdoredAgreeableFireant.jpg"
-    srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/AdoredAgreeableFireant.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695322094/rockinghelvetica.com/AdoredAgreeableFireant.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/AdoredAgreeableFireant.jpg 1920w"
-    sizes="(max-width: 480px) 320px, 100vw">
-</div>
-<div class="slide aspect-box aspect-portrait" data-state="unloaded" data-id="ClearFrayedChinesecrocodilelizard">
-  <img
-    src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/ClearFrayedChinesecrocodilelizard.jpg"
-    srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/ClearFrayedChinesecrocodilelizard.jpg 75w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695322094/rockinghelvetica.com/ClearFrayedChinesecrocodilelizard.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/ClearFrayedChinesecrocodilelizard.jpg 810w"
-    sizes="(max-width: 480px) 320px, 100vw">
-</div>
-<div class="slide aspect-box aspect-complement" data-state="unloaded" data-id="GlisteningAcidicIbizanhound">
-  <img
-    src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/GlisteningAcidicIbizanhound.jpg"
-    srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/GlisteningAcidicIbizanhound.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/GlisteningAcidicIbizanhound.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/GlisteningAcidicIbizanhound.jpg 1110w"
-    sizes="(max-width: 480px) 320px, 100vw">
-</div>
-<div class="slide aspect-box" data-state="unloaded" data-id="RigidAdmiredFinch">
-  <img
-    src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/RigidAdmiredFinch.jpg"
-    srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/RigidAdmiredFinch.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/RigidAdmiredFinch.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/RigidAdmiredFinch.jpg 1920w"
-    sizes="(max-width: 480px) 320px, 100vw">
-</div>
-<div class="slide aspect-box" data-state="unloaded" data-id="SophisticatedNaiveFlyingfish">
-  <img
-    src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/SophisticatedNaiveFlyingfish.jpg"
-    srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/SophisticatedNaiveFlyingfish.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/SophisticatedNaiveFlyingfish.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/SophisticatedNaiveFlyingfish.jpg 1920w"
-    sizes="(max-width: 480px) 320px, 100vw">
-</div>
-<div class="slide aspect-box" data-state="unloaded" data-id="IckyKindFish">
-  <img
-    src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/IckyKindFish.jpg"
-    srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/IckyKindFish.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/IckyKindFish.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/IckyKindFish.jpg 1920w"
-    sizes="(max-width: 480px) 320px, 100vw">
-</div>
-<div class="slide aspect-box" data-state="unloaded" data-id="MadeupMediocreGemsbuck">
-  <img
-    src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/MadeupMediocreGemsbuck.jpg"
-    srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/MadeupMediocreGemsbuck.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/MadeupMediocreGemsbuck.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/MadeupMediocreGemsbuck.jpg 1920w"
-    sizes="(max-width: 480px) 320px, 100vw">
-</div>
-<div class="slide aspect-box" data-state="unloaded" data-id="ElectricFarawayHarvestmouse">
-  <img
-    src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/ElectricFarawayHarvestmouse.jpg"
-    srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/ElectricFarawayHarvestmouse.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/ElectricFarawayHarvestmouse.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/ElectricFarawayHarvestmouse.jpg 1920w"
-    sizes="(max-width: 480px) 320px, 100vw">
-</div>
-<div class="slide aspect-box" data-state="unloaded" data-id="WhiteVagueBluejay">
-  <img
-    src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/WhiteVagueBluejay.jpg"
-    srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/WhiteVagueBluejay.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/WhiteVagueBluejay.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/WhiteVagueBluejay.jpg 1920w"
-    sizes="(max-width: 480px) 320px, 100vw">
-</div>
-<div class="slide aspect-box" data-state="unloaded" data-id="FailingAllCrustacean">
-  <img
-    src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/FailingAllCrustacean.jpg"
-    srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/FailingAllCrustacean.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/FailingAllCrustacean.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/FailingAllCrustacean.jpg 1920w"
-    sizes="(max-width: 480px) 320px, 100vw">
-</div>
-<div class="slide aspect-box" data-state="unloaded" data-id="OptimisticOldfashionedHairstreakbutterfly">
-  <img
-    src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/OptimisticOldfashionedHairstreakbutterfly.jpg"
-    srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/OptimisticOldfashionedHairstreakbutterfly.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/OptimisticOldfashionedHairstreakbutterfly.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/OptimisticOldfashionedHairstreakbutterfly.jpg 1920w"
-    sizes="(max-width: 480px) 320px, 100vw">
-</div>
-<div class="slide aspect-box aspect-complement" data-state="unloaded" data-id="ClosedIllCaecilian">
-  <img
-    src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/ClosedIllCaecilian.jpg"
-    srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/ClosedIllCaecilian.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/ClosedIllCaecilian.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/ClosedIllCaecilian.jpg 1110w"
-    sizes="(max-width: 480px) 320px, 100vw">
-</div>
-<div class="slide aspect-box aspect-portrait" data-state="unloaded" data-id="SkinnyGrouchyAnt">
-  <img
-    src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/SkinnyGrouchyAnt.jpg"
-    srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/SkinnyGrouchyAnt.jpg 75w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/SkinnyGrouchyAnt.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/SkinnyGrouchyAnt.jpg 810w"
-    sizes="(max-width: 480px) 320px, 100vw">
-</div>
-<div class="slide aspect-box" data-state="unloaded" data-id="GiddyImpureHoneyeater">
-  <img
-    src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/GiddyImpureHoneyeater.jpg"
-    srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/GiddyImpureHoneyeater.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/GiddyImpureHoneyeater.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/GiddyImpureHoneyeater.jpg 1920w"
-    sizes="(max-width: 480px) 320px, 100vw">
-</div>
-<div class="slide aspect-box" data-state="unloaded" data-id="TautHappygoluckyBronco">
-  <img
-    src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/TautHappygoluckyBronco.jpg"
-    srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/TautHappygoluckyBronco.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/TautHappygoluckyBronco.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/TautHappygoluckyBronco.jpg 1920w"
-    sizes="(max-width: 480px) 320px, 100vw">
-</div>
-<div class="slide aspect-box aspect-complement" data-state="unloaded" data-id="GrouchyEnchantingKomododragon">
-  <img
-    src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/com/GrouchyEnchantingKomododragon.jpg"
-    srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/com/GrouchyEnchantingKomododragon.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/GrouchyEnchantingKomododragon.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/GrouchyEnchantingKomododragon.jpg 1110w"
-    sizes="(max-width: 480px) 320px, 100vw">
-</div>
-<div class="slide aspect-box aspect-portrait" data-state="unloaded" data-id="BrightHastyIbis">
-  <img
-    src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695332013/rockinghelvetica.com/BrightHastyIbis.jpg"
-    srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695332013/rockinghelvetica.com/BrightHastyIbis.jpg 75w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695332013/rockinghelvetica.com/BrightHastyIbis.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695332013/rockinghelvetica.com/BrightHastyIbis.jpg 810w"
-    sizes="(max-width: 480px) 320px, 100vw">
-</div>
-<div class="slide aspect-box" data-state="unloaded" data-id="SlushyShowyBluefish">
-  <img
-    src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/SlushyShowyBluefish.jpg"
-    srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/SlushyShowyBluefish.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/SlushyShowyBluefish.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/SlushyShowyBluefish.jpg 1920w"
-    sizes="(max-width: 480px) 320px, 100vw">
-</div>
-<div class="slide aspect-box" data-state="unloaded" data-id="ShockedMeanLangur">
-  <img
-    src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/ShockedMeanLangur.jpg"
-    srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/ShockedMeanLangur.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/ShockedMeanLangur.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/ShockedMeanLangur.jpg 1920w"
-    sizes="(max-width: 480px) 320px, 100vw">
-</div>
-<div class="slide aspect-box" data-state="unloaded" data-id="WetMeekChevrotain">
-  <img
-    src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/WetMeekChevrotain.jpg"
-    srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/WetMeekChevrotain.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/WetMeekChevrotain.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/WetMeekChevrotain.jpg 1920w"
-    sizes="(max-width: 480px) 320px, 100vw">
-</div>
-<div class="slide aspect-box" data-state="unloaded" data-id="UnsteadyImpossibleElephant">
-  <img
-    src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/UnsteadyImpossibleElephant.jpg"
-    srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/UnsteadyImpossibleElephant.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/UnsteadyImpossibleElephant.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/UnsteadyImpossibleElephant.jpg 1920w"
-    sizes="(max-width: 480px) 320px, 100vw">
-</div>
-<!--   <div class="slide aspect-box" data-state="unloaded" data-id="TalkativeConventionalEuropeanfiresalamander">
-    <img src="https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/TalkativeConventionalEuropeanfiresalamander.jpg" srcset="https://thumbs.gfycat.com/TalkativeConventionalEuropeanfiresalamander.jpg 100w,https://thumbs.gfycat.com/TalkativeConventionalEuropeanfiresalamander.jpg 640w,https://thumbs.gfycat.com/TalkativeConventionalEuropeanfiresalamander-poster.jpg 1920w" sizes="(max-width: 480px) 320px, 100vw">
-  </div> -->
-<div class="slide aspect-box" data-state="unloaded" data-id="TanOptimalCat">
-  <img
-    src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/TanOptimalCat.jpg"
-    srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/TanOptimalCat.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/TanOptimalCat.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/TanOptimalCat.jpg 1920w"
-    sizes="(max-width: 480px) 320px, 100vw">
-</div>
-<div class="slide aspect-box" data-state="unloaded" data-id="DistortedUltimateConch">
-  <img
-    src="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/DistortedUltimateConch.jpg"
-    srcset="https://res.cloudinary.com/dxlyd7sac/video/upload/t_media_lib_thumb/v1695322094/rockinghelvetica.com/DistortedUltimateConch.jpg 100w,https://res.cloudinary.com/dxlyd7sac/video/upload/ac_none,br_1100k,c_scale,q_auto:best,vc_h264,w_640/v1695325712/rockinghelvetica.com/DistortedUltimateConch.jpg 640w,https://res.cloudinary.com/dxlyd7sac/video/upload/v1695322094/rockinghelvetica.com/DistortedUltimateConch.jpg 1920w"
-    sizes="(max-width: 480px) 320px, 100vw">
-</div>
-</div>
-  </div>
-</section>
+</main>  
 <nav>
   <button type="button" id="tldr">TL:DR</button>
 </nav>
@@ -865,7 +898,9 @@ window.transitionEndEventName = ('WebkitTransition' in document.documentElement.
         src = document.createElement('source');
 
     vid.setAttribute('playsinline', '');
-    vid.setAttribute('muted', '');
+    vid.setAttribute('muted', 'true');
+    // Chrome autoplay policy seems to skip the DOM attribute now?
+    vid.muted = true;
     vid.className = 'gfy-video';
     vid.autoplay = true;
     vid.loop = true;
@@ -1093,11 +1128,13 @@ window.slides = (function(){
     return activated[0];
   }
   
-  
-  
   function focus(target) {
-    // Center in view,
-    if(target && target.parentElement && !window.matchMedia("(max-width: 670px)").matches && this.root.classList.contains("snapped")) {
+    let remInPixels = parseFloat(getComputedStyle(document.documentElement).fontSize);
+    let threshold = 16 * remInPixels;
+
+    if (target && target.parentElement && !window.matchMedia("(max-width: 670px)").matches && window.scrollY > threshold) {
+      // The page is scrolled past the threshold to snap the Slides (sticky).
+      // Bring slide into focus area
       var rect = target.getBoundingClientRect(),
           y = target.parentElement.getBoundingClientRect().top;
      
@@ -1106,12 +1143,11 @@ window.slides = (function(){
       // Does not go positive in viewport.
       this.root.style.transform = "translate3d(0," + Math.min(y,0) + "px,0)";
     } else {
+      // The page is not scrolled past the threshold.
       this.root.style.transform = "";
-      //window.scrollBy({ top: 100, left: 0, behavior: 'smooth' });
-      //e.target.scrollIntoView();
-    }
+   }
   }
-  
+    
   
   
   function reset() {
@@ -1150,8 +1186,6 @@ window.slides = (function(){
 
 
 
-
-// NOT USED IN V1.4
 window.cases = (function(){
   'use strict';
   
@@ -1173,6 +1207,13 @@ window.cases = (function(){
     }
   }
   
+  // Added in 2023: refactored out JS-based sticky container for CSS but need this for other logic
+  function isStuck() {
+    let rect = this.root.getBoundingClientRect();
+    let offsetParentRect = this.root.offsetParent.getBoundingClientRect();
+    return rect.top <= offsetParentRect.top;
+  }
+
   
   // When case view is on, this update still hits slides first.
   function updateBothViews() {
@@ -1290,10 +1331,27 @@ function main() {
     return (Node.ELEMENT_NODE === el.nodeType && el.classList.contains("slide"));
   } 
 
+  /*
   
+    2023 update:
+    - fix scrolling behavior but also modernize
+    - does traverse view work?
+  
+  
+  */
   
   // Event handler callback for scroll
   // Bound from outside of scrub obj because we'll be hot-swapping it in V2.
+  /*
+    2023 code review NOTES: this existed before intersection observers
+    it relies on there being an active slide/case text (defaults to first item) 
+    and then it picks a traversal method based on whether the element top is above or below 
+    the midpoint of the viewport. WHere the top is below it looks up (wastes a cycle looking at active)
+    but if it's above it looks down
+
+    the code either breaks with target being the slide under midpoint or empty
+
+  */
   function traverseView(view, time) { 
         
     // This queries the DOM, but it's light-touch.
@@ -1308,6 +1366,7 @@ function main() {
     
     while( target ) {
       var r = target.getBoundingClientRect();
+      // Terminate if target is hitting the midpoint
       if( r.top < this.midpoint && r.bottom > this.midpoint ) break; 
       // Terminate with no hit when we've exceeded the direction, but not intersecting.
       if(( r.bottom > this.midpoint && traversalMethod === "nextElementSibling") 
@@ -1320,8 +1379,8 @@ function main() {
     
     // Update snap threshold
     // TODO: consider CSS alternative if supported
-    var snap = Boolean(window.cases.root.getBoundingClientRect().top <= 0);
-    window.slides.root.classList.toggle("snapped", snap);
+    // var snap = Boolean(window.cases.root.getBoundingClientRect().top <= 0);
+    // window.slides.root.classList.toggle("snapped", snap);
     
     // Checking target === active doesn't account for default case
     // Hence, we compare on the DOM.
