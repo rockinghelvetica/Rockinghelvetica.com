@@ -1464,7 +1464,7 @@ function main() {
       scrub.handleEvent = function(e) {
         return !rAF && (rAF = requestAnimationFrame( read ));
       };
-      scrub.target = cases.root.ownerDocument;
+      // scrub.target = cases.root.ownerDocument;
     } else {
       console.log('installing slides');
       document.documentElement.classList.add("tldr-mode");
@@ -1472,7 +1472,7 @@ function main() {
       scrub.handleEvent = function(e) {
         return !rAF && (rAF = requestAnimationFrame( browse ));
       };
-      scrub.target = slides.root.ownerDocument;
+      // scrub.target = slides.root.ownerDocument;
     }
     
     //SETUP:
