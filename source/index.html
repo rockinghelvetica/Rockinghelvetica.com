@@ -262,31 +262,24 @@ p {
   display: none;
 } 
 
-/* New in 2023 patch */
+/* 
+  New in 2023 patch 
+  does this width overflow
+*/
 #sticky-container {
   position: sticky;
   top: 0;
   align-self: flex-start;
-  /* 2023 tweak this might not perform well */
-  flex: none;
-  width: 30vw;
-  transition: width 0.5s ease-in-out;
-}
-
-html.tldr-mode #sticky-container {
-  width: 100vw;
 }
 
 #slides {
-  position: sticky;
-  top: 0;
   background: white;
   overflow: visible;
   height: calc(100vh - 2rem);
   box-sizing: border-box;
   left: 0;
   width: 30vw;
-  transition: transform 0.5s ease-in;
+  transition: transform 0.5s ease-in, width 0.5s ease-out;
 }
 
 #slides .scrollable {
@@ -302,6 +295,11 @@ html.tldr-mode #sticky-container {
   transition: transform 0.3s ease-in;
   position: relative;
   height: 16.875vw;
+}
+
+/* new in 2023 patch */
+html.tldr-mode #slides {
+  width: 100vw;
 }
 
 .tldr-mode #slides .scrollable:after {
