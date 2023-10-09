@@ -1272,6 +1272,7 @@ window.cases = (function(){
 
 // Manages scroll observation across mutually-exclusive view states.
 // The object is a complex EventListener which also manages related bindings.
+// When the target is assigned (toggling TLDR mode) this manages all the side effects of event setup and teardown.
 window.scrub = (function() {
   'use strict';
   
@@ -1297,11 +1298,13 @@ window.scrub = (function() {
       set: function( eventTarget ) {
         console.log("setting target", eventTarget, target);
         if(target) {
+          console.log("tearing down events");
           target.removeEventListener("scroll", this, window.passiveCaptureFlag);
           window.removeEventListener("resize", this.invalidateMidpoint);
           this.invalidateMidpoint();
         }
         if(eventTarget) {
+          console.log("setting up events");
           this.invalidateMidpoint();
           target = eventTarget;
           target.addEventListener("scroll", this, window.passiveCaptureFlag);
