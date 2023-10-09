@@ -264,12 +264,14 @@ p {
 
 /* 
   New in 2023 patch 
-  does this width overflow
+  The explicit width makes the zoom work ok
 */
 #sticky-container {
   position: sticky;
   top: 0;
   align-self: flex-start;
+  width: 30vw;
+  transition: none;
 }
 
 #slides {
@@ -297,9 +299,10 @@ p {
   height: 16.875vw;
 }
 
-/* new in 2023 patch */
+/* new in 2023 patch, it animates to zoom width */
+html.tldr-mode #sticky-container,
 html.tldr-mode #slides {
-  width: 100vw;
+  width: calc(100vw - 2rem);
 }
 
 .tldr-mode #slides .scrollable:after {
