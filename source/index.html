@@ -1503,7 +1503,7 @@ function main() {
         let activeSlideId = document.querySelector(".slide.active").dataset.id;
         let textBlock = document.querySelector(`p[data-id="${activeSlideId}"]`);
         if (textBlock) {
-          textBlock.scrollIntoView();
+          window.slides.focus(textBlock);
         }
       }, 0);
 
