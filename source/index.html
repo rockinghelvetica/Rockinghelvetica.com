@@ -826,16 +826,19 @@ function getDefaultGfyItem(id) {
 }
 
 function ripGfyAPI(id) {
-  if (gfyAPI[id]) {
-    return {
-      "gfyItem": {
-        ...getDefaultGfyItem(id).gfyItem,
-        ...gfyAPI[id].gfyItem
-      }
-    };
-  } else {
-    return getDefaultGfyItem(id);
-  }
+  // Fix: the Gfycat API used promises, oops
+  return new Promise((resolve, reject) => {
+    if (gfyAPI[id]) {
+      return {
+        "gfyItem": {
+          ...getDefaultGfyItem(id).gfyItem,
+          ...gfyAPI[id].gfyItem
+        }
+      };
+    } else {
+      return getDefaultGfyItem(id);
+    }
+  });
 }
 
 </script>
