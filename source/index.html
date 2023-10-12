@@ -1159,15 +1159,23 @@ window.slides = (function(){
       // Bring slide into focus area
       var rect = target.getBoundingClientRect(),
           y = target.parentElement.getBoundingClientRect().top;
-     
+    
+      // The slide is "centered" visually vertically with a negative transform
       y += (1 * window.scrub.midpoint - rect.top - (rect.height/2));
       
-      // Does not go positive in viewport.
-      this.root.style.transform = "translate3d(0," + Math.min(y,0) + "px,0)";
+      // Check if the document has a tldr-mode class
+      if (document.documentElement.classList.contains('tldr-mode')) {
+        // If tldr-mode is active, apply the y offset to the page's scroll
+        window.scrollTo(0, window.scrollY + Math.min(y, 0));
+        this.root.style.transform = "";
+      } else {
+        // If tldr-mode is not active, apply the transform
+        this.root.style.transform = "translate3d(0," + Math.min(y,0) + "px,0)";
+      }
     } else {
       // The page is not scrolled past the threshold.
       this.root.style.transform = "";
-   }
+    }
   }
     
   
