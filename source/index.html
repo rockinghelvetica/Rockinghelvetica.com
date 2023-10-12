@@ -233,14 +233,18 @@ p {
 
 
 
+/* 
+  SLIDES (see also TLDR overrides and mobile specific patches at the end 
+  The sticky container and CSS grid usage are new in 2023 patches thanks to AI help (Cursor.so)
+*/
 
-/* TODO */
-/* .slide[data-state='unloaded'] {
-  opacity: 0.7;
-} */
-
-
-
+#sticky-container {
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  width: 30vw;
+  transition: none;
+}
 
 #slides img,
 #slides video { 
@@ -259,20 +263,37 @@ p {
 }
 
 #slides video[data-media-state] + img { 
-  display: none;
+  /* removed for css grid */
+  /* display: none; */
 } 
 
-/* 
-  New in 2023 patch 
-  The explicit width makes the zoom work ok
-*/
-#sticky-container {
-  position: sticky;
-  top: 0;
-  align-self: flex-start;
-  width: 30vw;
-  transition: none;
+.aspect-box {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  background: #0077C8;
+  transform-origin: 0 0;
+  transform: scale(1.0, 1.0);
+  transition: transform 0.3s ease-in;
 }
+
+.aspect-portrait {
+  min-width: 135px;
+  height: 42.1875%; /* 42.1875% of grid container width */
+  grid-column-end: span 3; /* by default it is full width */
+}
+
+.aspect-complement {
+  min-width: 185px;
+  height: 57.2916667%; /* 57.2916667% of grid container width */
+  grid-column-end: span 3; /* by default it is full width */
+}
+
+
+
+
 
 #slides {
   background: white;
@@ -286,27 +307,16 @@ p {
 
 #slides .scrollable {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  grid-auto-rows: 16.875vw; /* maintain 16:9 aspect ratio */
-  grid-gap: 1rem;
+  grid-template-columns: 0.421875fr 0.150041667fr 0.427083333fr; /* The 2-column layout can flop */
+  grid-auto-rows: minmax(56.25%, auto); /* Default row height is 56.25% of grid container width */
+  grid-gap: 0;
 }
 
-#slides .scrollable .aspect-box {
-  width: 100%;
-  background: white;
-  margin: 0;
-  transform-origin: 0 0;
-  transform: scale(1.0, 1.0);
-  transition: transform 0.3s ease-in;
-  position: relative;
-  height: 100%;
-}
+/* html.tldr-mode #slides .scrollable {
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); 
+} */
 
-html.tldr-mode #slides .scrollable {
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* adjust as needed */
-}
-
-/* Adjust grid for .aspect-portrait and .aspect-complement in normal state */
+/* probably broken let's see */
 @media (min-width: 670px) {
   #slides .scrollable .aspect-portrait,
   #slides .scrollable .aspect-complement {
@@ -314,10 +324,12 @@ html.tldr-mode #slides .scrollable {
   }
 }
 
-/* Adjust grid for .aspect-portrait and .aspect-complement in .tldr-mode */
-html.tldr-mode #slides .scrollable .aspect-portrait,
-html.tldr-mode #slides .scrollable .aspect-complement {
+html.tldr-mode #slides .scrollable .aspect-portrait {
   grid-column-end: span 1; /* make these elements span one column */
+}
+
+html.tldr-mode #slides .scrollable .aspect-complement {
+  grid-column-end: span 2; /* make these elements span two columns */
 }
 
 /* new in 2023 patch, it animates to zoom width */
@@ -332,40 +344,14 @@ html.tldr-mode #slides {
   height: 30vh;
 }
 
-.aspect-box {
-  position: relative;
-  height: 100%;
-  flex: 0 0 100%;
-  box-sizing: border-box;
-  overflow: hidden;
-  background: #0077C8;
-}
-
-.aspected {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
-.aspect-portrait {
-  min-width: 135px;
-  flex: 1 1 42.1875%;
-}
-
-.aspect-complement {
-  min-width: 185px;
-  flex: 1 1 57.2916667%;
-}
-
-html:not(.tldr-mode) .aspect-portrait {
+/* html:not(.tldr-mode) .aspect-portrait {
     min-height: 237.037037%;
     flex-basis: 100%;
   } 
 
 html:not(.tldr-mode) .aspect-complement {
     min-height: 172.972973%;
-  }
+  } */
 
 .tldr-mode #slides {
   width: 100%;
@@ -386,12 +372,11 @@ html:not(.tldr-mode) .aspect-complement {
   display: none;
 }
 
-.tldr-mode #slides {
+/* .tldr-mode #slides {
   height: auto;  
 }
 
 .tldr-mode #slides .scrollable {
-  /* TLDR Overrides */
   height: calc((100vw - 2rem) * 0.5625);
 }
 
@@ -399,7 +384,7 @@ html:not(.tldr-mode) .aspect-complement {
   transform-origin: top left;
   transform: scale(0.3333333333,0.33333);
   transition: none;
-}
+} */
 
 
 
