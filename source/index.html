@@ -1499,8 +1499,9 @@ function main() {
 
       // when restoring the case studies we want to sync back to the text related to the slide that is showing
       // TO DO is probably to offset the scroll position with focus()
+      let activeSlideId = document.querySelector(".slide.active").dataset.id;
+      console.log(activeSlideId);
       setTimeout(() => {
-        let activeSlideId = document.querySelector(".slide.active").dataset.id;
         let textBlock = document.querySelector(`p[data-id="${activeSlideId}"]`);
         if (textBlock) {
           window.slides.focus(textBlock);
