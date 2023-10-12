@@ -258,9 +258,8 @@ p {
 
 #slides .scrollable {
   display: grid;
-  grid-template-columns: 0.421875fr 0.150041667fr 0.427083333fr; /* The 2-column layout can flop */
-  /* the bot was so sure this was going to work and it was wrong */
-  /* grid-auto-rows: minmax(56.25%, auto);  */
+  /* The 2-up layout can flop sequence of widths so the grid is 3 odd columns */
+  grid-template-columns: 42.1% 1fr 42.1%; 
   grid-gap: 0;
 }
 
