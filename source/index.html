@@ -246,6 +246,24 @@ p {
   transition: none;
 }
 
+#slides {
+  background: white;
+  overflow: visible;
+  height: calc(100vh - 2rem);
+  box-sizing: border-box;
+  left: 0;
+  width: 30vw;
+  transition: transform 0.5s ease-in, width 0.5s ease-out;
+}
+
+#slides .scrollable {
+  display: grid;
+  grid-template-columns: 0.421875fr 0.150041667fr 0.427083333fr; /* The 2-column layout can flop */
+  /* the bot was so sure this was going to work and it was wrong */
+  /* grid-auto-rows: minmax(56.25%, auto);  */
+  grid-gap: 0;
+}
+
 #slides img,
 #slides video { 
   object-fit: cover;
@@ -277,17 +295,20 @@ p {
   transform-origin: 0 0;
   transform: scale(1.0, 1.0);
   transition: transform 0.3s ease-in;
+  grid-column-end: span 3;
 }
 
 .aspect-portrait {
   min-width: 135px;
-  height: 42.1875%; /* 42.1875% of grid container width */
+  /* height: 42.1875%; */
+   /* 42.1875% of grid container width */
   grid-column-end: span 3; /* by default it is full width */
 }
 
 .aspect-complement {
   min-width: 185px;
-  height: 57.2916667%; /* 57.2916667% of grid container width */
+  /* height: 57.2916667%;  */
+  /* 57.2916667% of grid container width */
   grid-column-end: span 3; /* by default it is full width */
 }
 
@@ -295,22 +316,7 @@ p {
 
 
 
-#slides {
-  background: white;
-  overflow: visible;
-  height: calc(100vh - 2rem);
-  box-sizing: border-box;
-  left: 0;
-  width: 30vw;
-  transition: transform 0.5s ease-in, width 0.5s ease-out;
-}
 
-#slides .scrollable {
-  display: grid;
-  grid-template-columns: 0.421875fr 0.150041667fr 0.427083333fr; /* The 2-column layout can flop */
-  grid-auto-rows: minmax(56.25%, auto); /* Default row height is 56.25% of grid container width */
-  grid-gap: 0;
-}
 
 /* html.tldr-mode #slides .scrollable {
   grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); 
