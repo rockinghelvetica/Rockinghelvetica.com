@@ -1158,7 +1158,7 @@ window.slides = (function(){
       y += (1 * window.scrub.midpoint - rect.top - (rect.height/2));
       
       // Check if we are syncing position of slides (parent is this.root) or case text
-      if (this.root.contains(target)) {
+      if (!this.root.contains(target)) {
         // If tldr-mode is active, apply the y offset to the page's scroll
         console.log("scroll to", rect, y)
         window.scrollTo(0, window.scrollY + Math.min(y, 0));
