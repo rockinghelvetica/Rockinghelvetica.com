@@ -1145,23 +1145,26 @@ window.slides = (function(){
   function focus(target) {
     let remInPixels = parseFloat(getComputedStyle(document.documentElement).fontSize);
     let threshold = 16 * remInPixels;
+    let y = 0;
 
     console.log(`focus on ${target.dataset.id}`);
 
     if (target && target.parentElement && !window.matchMedia("(max-width: 670px)").matches && window.scrollY > threshold) {
       // The page is scrolled past the threshold to snap the Slides (sticky).
       // Bring slide into focus area
-      var rect = target.getBoundingClientRect();
-
-      // The slide is "centered" visually vertically in the viewport
-      let y = window.scrollY + rect.top - window.scrub.midpoint + rect.height / 2;
+      let rect = target.getBoundingClientRect();
 
       // Check if we are syncing position of slides (parent is this.root) or case text
       if (!this.root.contains(target)) {
+        // In this case we calculate y differently
+        y = window.scrollY + rect.top - window.scrub.midpoint + rect.height / 2;
         // If tldr-mode is active, apply the y offset to the page's scroll
         window.scrollTo(0, y);
         this.root.style.transform = "";
       } else {
+        // The slide is "centered" visually vertically with a negative transform
+        y = target.parentElement.getBoundingClientRect().top;
+        y += (1 * window.scrub.midpoint - rect.top - (rect.height/2));;
         // If tldr-mode is not active, apply the transform
         this.root.style.transform = "translate3d(0," + Math.min(y,0) + "px,0)";
       }
