@@ -826,19 +826,16 @@ function getDefaultGfyItem(id) {
 }
 
 function ripGfyAPI(id) {
-  // Fix: the Gfycat API used promises, oops
-  return new Promise((resolve, reject) => {
-    if (gfyAPI[id]) {
-      return {
-        "gfyItem": {
-          ...getDefaultGfyItem(id).gfyItem,
-          ...gfyAPI[id].gfyItem
-        }
-      };
-    } else {
-      return getDefaultGfyItem(id);
-    }
-  });
+  if (gfyAPI[id]) {
+    return {
+      "gfyItem": {
+        ...getDefaultGfyItem(id).gfyItem,
+        ...gfyAPI[id].gfyItem
+      }
+    };
+  } else {
+    return getDefaultGfyItem(id);
+  }
 }
 
 </script>
@@ -1078,27 +1075,19 @@ window.slides = (function(){
     
     el.dataset.state = "loading";
     this.gfys[ name ] = new Gfy(name);
+
+    // removed: a success function bound to name that was enaged with the promise returned from gfycat
     
-    // name is bound from this closure
-    var success = function(name, data) { 
-      // TODO If this has any CSS side-effect consider moving it to update cycle.
+    // This moderates how many begin in parallel, not an all day count.
+    preloads++;
+    let response = ripGfyAPI(name);
+    if (response) {
       document.querySelector(".slide[data-id='" + name + "']").dataset.state = "loaded";
       this.gfys[ name ].data = data.gfyItem;
-
       // Start next item, maybe.
       --preloads;
       if(stack.length && preloads <= window.rock.connections) 
         this.load( stack.shift() );
-    }.bind(this, name);
-  
-    // Upon resolution, a new slide may be prefetched
-    // This moderates how many begin in parallel.
-    preloads++;
-    
-    // TO DO: brush up on await and async stuff if necessary here
-    let response = ripGfyAPI(name);
-    if (response) {
-        success(response);
     } else {
         console.log('Error: Unable to fetch data');
     }
@@ -1125,8 +1114,8 @@ window.slides = (function(){
         // User-interaction might change the state, so we assume nothing & re-render.
         var i = stack.indexOf( slide );
         if( i >= 0) {
-          this.load( stack.splice( i, 1 )[0] )
-            .then(updateSlides.bind(this));
+          this.load( stack.splice( i, 1 )[0] );
+          updateSlides.bind(this)();
         }
 
       } else {
@@ -1503,7 +1492,6 @@ function main() {
       // when restoring the case studies we want to sync back to the text related to the slide that is showing
       // TO DO is probably to offset the scroll position with focus()
       let activeSlideId = document.querySelector(".slide.active").dataset.id;
-      console.log(activeSlideId);
       setTimeout(() => {
         let textBlock = document.querySelector(`p[data-id="${activeSlideId}"]`);
         if (textBlock) {
