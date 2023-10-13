@@ -1098,6 +1098,8 @@ window.slides = (function(){
   function updateSlides() {
     var a = activated.length,
         slide = activated[0];
+
+        console.log("render Slides")
     
     // Activated contains at least every slide that should be playing
     // Index 0 is certainly .active, and the next plays conditionally (if present, and only upon :hover)
@@ -1241,23 +1243,29 @@ window.cases = (function(){
   }
 
   
-  // When case view is on, this update still hits slides first.
+  // When case view is on scroll events, this update still hits slides.render() first.
+  // This selects the case paragraph for the active slide
   function updateBothViews() {
     var activeSlide = window.slides.render(),
         activeP;
     
+    console.log("update on Cases")
+
     if(activeSlide) {
       var id = activeSlide.dataset.id,
           activish = [...document.querySelectorAll('p.active, p[data-id="' + id + '"]')];
       
-      // The query includes any p.active plus our target, to enforce a singlular case.
-      // For an initial string value, we carry the final element once hit.
-      // Will output the search string if not in DOM (but …how'd you do that?)
+      // The arroy includes "p.active" and matching ids
+      // Then it reconciles the classList so that the active p matches the target id
+      // If the id is not matched (error) it reduces to the id string
+      // I'm not sure the return is used in any case.
       activeP = activish.reduce( function( a, p ) {
         var match = Boolean("string" === typeof a && p.dataset.id === a);
         p.classList.toggle("active", match );
         return (match) ? p : a;
       }, id);
+      // This is where the slide strip is sync'd into view on desktop
+      console.log("focus Slides")
       window.slides.focus(activeSlide);
     }
     return activeP;
