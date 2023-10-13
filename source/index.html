@@ -1083,7 +1083,7 @@ window.slides = (function(){
     let response = ripGfyAPI(name);
     if (response) {
       document.querySelector(".slide[data-id='" + name + "']").dataset.state = "loaded";
-      this.gfys[ name ].data = data.gfyItem;
+      this.gfys[ name ].data = response.gfyItem;
       // Start next item, maybe.
       --preloads;
       if(stack.length && preloads <= window.rock.connections) 
