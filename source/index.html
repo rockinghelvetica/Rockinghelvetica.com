@@ -1160,7 +1160,7 @@ window.slides = (function(){
       // Check if we are syncing position of slides (parent is this.root) or case text
       if (!this.root.contains(target)) {
         // If tldr-mode is active, apply the y offset to the page's scroll
-        console.log("scroll to", rect, y)
+        console.log("scroll to", rect, y, target.parentElement.getBoundingClientRect().top, window.scrub.midpoint)
         window.scrollTo(0, window.scrollY + Math.min(y, 0));
         this.root.style.transform = "";
       } else {
