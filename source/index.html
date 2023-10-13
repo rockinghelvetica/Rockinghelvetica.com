@@ -1164,12 +1164,17 @@ window.slides = (function(){
         window.scrollTo(0, y);
         this.root.style.transform = "";
       } else {
-        // The slide is "centered" visually vertically with a negative transform
-        y = target.parentElement.getBoundingClientRect().top;
-        y += (1 * window.scrub.midpoint - rect.top - (rect.height/2));;
-        // If tldr-mode is not active, apply the transform
-        this.root.style.transform = "translate3d(0," + Math.min(y,0) + "px,0)";
+        // Redefine target to the slide
+        // No error handling whee
+        target = document.querySelector('.slide[data-id="'+ target.dataset.id +'"]');
       }
+
+      // We always want to sync the slide strip, whether a paragraph or slide was passed
+      // The slide is "centered" visually vertically with a negative transform
+      y = target.parentElement.getBoundingClientRect().top;
+      y += (1 * window.scrub.midpoint - rect.top - (rect.height/2));;
+      // If tldr-mode is not active, apply the transform
+      this.root.style.transform = "translate3d(0," + Math.min(y,0) + "px,0)";
     } else {
       // The page is not scrolled past the threshold.
       this.root.style.transform = "";
@@ -1246,10 +1251,11 @@ window.cases = (function(){
   // When case view is on scroll events, this update still hits slides.render() first.
   // This selects the case paragraph for the active slide
   function updateBothViews() {
+    console.log("update on Cases")
+
     var activeSlide = window.slides.render(),
         activeP;
     
-    console.log("update on Cases")
 
     if(activeSlide) {
       var id = activeSlide.dataset.id,
