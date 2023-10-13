@@ -1161,7 +1161,7 @@ window.slides = (function(){
       if (!this.root.contains(target)) {
         // If tldr-mode is active, apply the y offset to the page's scroll
         console.log("scroll to", rect, y, target.parentElement.getBoundingClientRect().top, window.scrub.midpoint)
-        window.scrollTo(0, window.scrollY + Math.min(y, 0));
+        window.scrollTo(0, y);
         this.root.style.transform = "";
       } else {
         // If tldr-mode is not active, apply the transform
