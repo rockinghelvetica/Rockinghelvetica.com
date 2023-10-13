@@ -1160,6 +1160,7 @@ window.slides = (function(){
       // Check if the document has a tldr-mode class
       if (document.documentElement.classList.contains('tldr-mode')) {
         // If tldr-mode is active, apply the y offset to the page's scroll
+        console.log("scroll to", rect, y)
         window.scrollTo(0, window.scrollY + Math.min(y, 0));
         this.root.style.transform = "";
       } else {
