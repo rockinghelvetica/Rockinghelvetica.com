@@ -1146,7 +1146,7 @@ window.slides = (function(){
     let remInPixels = parseFloat(getComputedStyle(document.documentElement).fontSize);
     let threshold = 16 * remInPixels;
 
-    console.log(`focus on ${target}`);
+    console.log(`focus on ${target.dataset.id}`);
 
     if (target && target.parentElement && !window.matchMedia("(max-width: 670px)").matches && window.scrollY > threshold) {
       // The page is scrolled past the threshold to snap the Slides (sticky).
