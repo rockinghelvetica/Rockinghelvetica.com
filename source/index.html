@@ -1161,9 +1161,10 @@ window.slides = (function(){
         window.scrollTo(0, y);
         this.root.style.transform = "";
       } else {
-        // Redefine target to the slide
+        // Redefine target to the slide & reprocess rect
         // No error handling whee
         target = document.querySelector('.slide[data-id="'+ target.dataset.id +'"]');
+        rect = target.getBoundingClientRect();
       }
 
       // We always want to sync the slide strip, whether a paragraph or slide was passed
