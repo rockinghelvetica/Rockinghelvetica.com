@@ -1532,6 +1532,8 @@ function main() {
       // let activeSlide = document.querySelector(".slide.active");
       // Ensure the current slide is in view
       if (this.active) {
+        // this isn't very good placement for this code or safe but it might work:
+        window.slides.root.style.transform = "";
         setTimeout(() => {
           window.slides.focus(this.active);
         }, 0);
