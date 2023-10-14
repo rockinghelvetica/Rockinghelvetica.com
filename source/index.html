@@ -1160,7 +1160,6 @@ window.slides = (function(){
         y = window.scrollY + rect.top - window.scrub.midpoint + rect.height / 2;
         window.scrollTo(0, y);
         this.root.style.transform = "";
-      } else {
         // Redefine target to the slide & reprocess rect
         // No error handling whee
         target = document.querySelector('.slide[data-id="'+ target.dataset.id +'"]');
@@ -1169,11 +1168,10 @@ window.slides = (function(){
 
       // We always want to sync the slide strip, whether a paragraph or slide was passed
       // The slide is "centered" visually vertically with a negative transform
-      y = target.parentElement.getBoundingClientRect().top;
-      y += (1 * window.scrub.midpoint - rect.top - (rect.height/2));
+      y = target.parentElement.getBoundingClientRect().top + window.scrollY;
+      y += (window.scrub.midpoint - rect.top - (rect.height/2));
       // the method to do this depends on TLDR mode
       if (document.documentElement.classList.contains("tldr-mode")) {
-        this.root.style.transform = "";
         window.scrollTo(0, y);
       } else {
         this.root.style.transform = "translate3d(0," + Math.min(y,0) + "px,0)";
@@ -1532,6 +1530,7 @@ function main() {
       // Get the current slide
       // let activeSlide = document.querySelector(".slide.active");
       // Ensure the current slide is in view
+      // deferred to ensure the 
       if (this.active) {
         setTimeout(() => {
           window.slides.focus(this.active);
