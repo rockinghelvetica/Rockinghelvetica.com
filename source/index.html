@@ -1173,7 +1173,7 @@ window.slides = (function(){
       // the method to do this depends on TLDR mode
       if (document.documentElement.classList.contains("tldr-mode")) {
         this.root.style.transform = "";
-        window.scrollTo(0, y + threshold);
+        window.scrollTo(0, y);
       } else {
         this.root.style.transform = "translate3d(0," + Math.min(y,0) + "px,0)";
       }
