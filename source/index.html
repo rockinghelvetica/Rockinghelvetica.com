@@ -1173,7 +1173,7 @@ window.slides = (function(){
       // the method to do this depends on TLDR mode
       if (document.documentElement.classList.contains("tldr-mode")) {
         this.root.style.transform = "";
-        window.scrollTo(0, y);
+        window.scrollTo(0, y - threshold);
       } else {
         this.root.style.transform = "translate3d(0," + Math.min(y,0) + "px,0)";
       }
@@ -1532,8 +1532,6 @@ function main() {
       // let activeSlide = document.querySelector(".slide.active");
       // Ensure the current slide is in view
       if (this.active) {
-        // this isn't very good placement for this code or safe but it might work:
-        window.slides.root.style.transform = "";
         setTimeout(() => {
           window.slides.focus(this.active);
         }, 0);
