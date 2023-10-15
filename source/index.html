@@ -1156,27 +1156,24 @@ window.slides = (function(){
       if (!this.root.contains(target)) {
         // If the target is a text block, center it in the viewport and redefine the target to be the corresponding slide
         y = window.scrollY + rect.top - window.scrub.midpoint + rect.height / 2;
+        window.scrollTo(0, y);
         target = document.querySelector('.slide[data-id="'+ target.dataset.id +'"]');
         rect = target.getBoundingClientRect();
       }
 
-      // Calculate the new scroll position
-      y = target.parentElement.getBoundingClientRect().top + window.scrollY;
-      y += (window.scrub.midpoint - rect.top - (rect.height/2));
-
       // If the page is in normal state, center the slide in the viewport
       if (!document.documentElement.classList.contains("tldr-mode")) {
+        // Calculate the new scroll position
+        y = target.parentElement.getBoundingClientRect().top + window.scrollY;
+        y += (window.scrub.midpoint - rect.top - (rect.height/2));
         this.root.style.transform = "translate3d(0," + Math.min(y,0) + "px,0)";
       }
-
-      // Update the scroll position
-      window.scrollTo(0, y);
     }
 
-    // // Clear the transform if the page is in TLDR mode
-    // if (document.documentElement.classList.contains("tldr-mode")) {
-    //   this.root.style.transform = "";
-    // }
+    // Clear the transform if the page is in TLDR mode
+    if (document.documentElement.classList.contains("tldr-mode")) {
+      this.root.style.transform = "";
+    }
   }
 
 
