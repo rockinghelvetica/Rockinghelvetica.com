@@ -1148,34 +1148,36 @@ window.slides = (function(){
     let remInPixels = parseFloat(getComputedStyle(document.documentElement).fontSize);
     let threshold = 16 * remInPixels;
     let y = 0;
-
+    
+    // target is usually a slide but sometimes a paragraph immediately after exiting tldr mode
     if (target && target.parentElement && !window.matchMedia("(max-width: 670px)").matches && window.scrollY > threshold) {
-      // The page is scrolled past the threshold to snap the Slides (sticky).
-      // Bring slide into focus area
       let rect = target.getBoundingClientRect();
 
-      // Check if we are syncing position of slides (parent is this.root) or case text
       if (!this.root.contains(target)) {
-        console.log("focus using text block");
+        // If the target is a text block, center it in the viewport and redefine the target to be the corresponding slide
         y = window.scrollY + rect.top - window.scrub.midpoint + rect.height / 2;
         window.scrollTo(0, y);
-        this.root.style.transform = "";
         target = document.querySelector('.slide[data-id="'+ target.dataset.id +'"]');
         rect = target.getBoundingClientRect();
       }
 
-      y = target.parentElement.getBoundingClientRect().top + window.scrollY;
-      y += (window.scrub.midpoint - rect.top - (rect.height/2));
-      // the method to do this depends on TLDR mode
-      if (document.documentElement.classList.contains("tldr-mode")) {
-        window.scrollTo(0, y);
-      } else {
+      // If the page is in normal state, center the slide in the viewport
+      if (!document.documentElement.classList.contains("tldr-mode")) {
+        y = target.parentElement.getBoundingClientRect().top + window.scrollY;
+        y += (window.scrub.midpoint - rect.top - (rect.height/2));
         this.root.style.transform = "translate3d(0," + Math.min(y,0) + "px,0)";
+      } else {
+        // In TLDR mode, use window scroll to center the slide
+        y = target.parentElement.getBoundingClientRect().top + window.scrollY;
+        y += (window.scrub.midpoint - rect.top - (rect.height/2));
+        window.scrollTo(0, y);
       }
-    } else {
-      // The page is not scrolled past the threshold.
-      this.root.style.transform = "";
-    }  
+    }
+
+    // // Clear the transform if the page is in TLDR mode
+    // if (document.documentElement.classList.contains("tldr-mode")) {
+    //   this.root.style.transform = "";
+    // }
   }
 
 
