@@ -992,7 +992,7 @@ window.transitionEndEventName = ('WebkitTransition' in document.documentElement.
   
   root.Gfy.prototype.cull = function() {
     var s;
-    console.log("cull " + this.id);
+    // console.log("cull " + this.id);
     if( this.media && this.media.parentNode ) {
       // In case video was still loading.
       this.media.removeEventListener("loadeddata", firstFrame);
@@ -1009,7 +1009,7 @@ window.transitionEndEventName = ('WebkitTransition' in document.documentElement.
       this.media.parentElement.removeChild( this.media );
       this.media = null;
     } else {
-      console.log("not culled in fact");
+      // console.log("not culled in fact");
     }
   }
 })(window);
@@ -1099,7 +1099,7 @@ window.slides = (function(){
     var a = activated.length,
         slide = activated[0];
 
-        console.log("render Slides")
+        // console.log("render Slides")
     
     // Activated contains at least every slide that should be playing
     // Index 0 is certainly .active, and the next plays conditionally (if present, and only upon :hover)
@@ -1151,6 +1151,11 @@ window.slides = (function(){
     let threshold = 16 * remInPixels;
     let y = 0;
 
+    // DOES THREE THINGS, where target is usually a slide but sometimes text
+    // A) scrolls text into view when exiting tldr mode
+    // B) syncs the slide container with a transform after above, and normally when active slide changes 
+    // C) when entering tldr mode it scrolls the active slide into view (transform on slide container should be zero'd)
+    
 
     if (target && target.parentElement && !window.matchMedia("(max-width: 670px)").matches && window.scrollY > threshold) {
       // The page is scrolled past the threshold to snap the Slides (sticky).
@@ -1160,7 +1165,7 @@ window.slides = (function(){
       // Check if we are syncing position of slides (parent is this.root) or case text
       if (!this.root.contains(target)) {
         console.log("focus using text block");
-        // In this case we calculate y differently
+        // GOAL (A) -- WORKING
         y = window.scrollY + rect.top - window.scrub.midpoint + rect.height / 2;
         window.scrollTo(0, y);
         this.root.style.transform = "";
@@ -1174,11 +1179,14 @@ window.slides = (function(){
       // The slide is "centered" visually vertically with a negative transform
       y = target.parentElement.getBoundingClientRect().top + window.scrollY;
       y += (window.scrub.midpoint - rect.top - (rect.height/2));
+      console.log (`y is ${y}`);
       // the method to do this depends on TLDR mode
       if (document.documentElement.classList.contains("tldr-mode")) {
         // assumption: focus is not called when in tldr-mode except as a one-time manual invocation immediately upon entering
+        console.log("scrolling into view");
         window.scrollTo(0, y);
       } else {
+        console.log("sync slides transform");
         this.root.style.transform = "translate3d(0," + Math.min(y,0) + "px,0)";
       }
       
@@ -1258,7 +1266,7 @@ window.cases = (function(){
   // When case view is on scroll events, this update still hits slides.render() first.
   // This selects the case paragraph for the active slide
   function updateBothViews() {
-    console.log("update on Cases")
+    // console.log("update on Cases")
 
     var activeSlide = window.slides.render(),
         activeP;
@@ -1278,7 +1286,7 @@ window.cases = (function(){
         return (match) ? p : a;
       }, id);
       // This is where the slide strip is sync'd into view on desktop
-      console.log("focus Slides")
+      // console.log("focus Slides")
       window.slides.focus(activeSlide);
     }
     return activeP;
@@ -1343,7 +1351,7 @@ window.scrub = (function() {
         return target;
       },
       set: function( eventTarget ) {
-        console.log("setting target", eventTarget, target);
+        // console.log("setting target", eventTarget, target);
         if(target) {
           console.log("tearing down events");
           target.removeEventListener("scroll", this, window.passiveCaptureFlag);
@@ -1351,7 +1359,7 @@ window.scrub = (function() {
           this.invalidateMidpoint();
         }
         if(eventTarget) {
-          console.log("setting up events");
+          // console.log("setting up events");
           this.invalidateMidpoint();
           target = eventTarget;
           target.addEventListener("scroll", this, window.passiveCaptureFlag);
@@ -1505,7 +1513,7 @@ function main() {
     var tldr = document.documentElement.classList.contains("tldr-mode");
     
     if(tldr) {
-      console.log('installing cases');
+      // console.log('installing cases');
       document.documentElement.classList.remove("tldr-mode");
       this.innerText = "TL:DR";
       scrub.handleEvent = function(e) {
@@ -1525,7 +1533,7 @@ function main() {
       }, 0);
 
     } else {
-      console.log('installing slides');
+      // console.log('installing slides');
       document.documentElement.classList.add("tldr-mode");
       this.innerText = "READ";
       scrub.handleEvent = function(e) {
