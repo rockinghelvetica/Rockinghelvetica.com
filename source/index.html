@@ -1165,6 +1165,8 @@ window.slides = (function(){
       // Bring slide into focus area
       let rect = target.getBoundingClientRect();
 
+      console.log(target, document.documentElement.classList);
+
       if (!this.root.contains(target)) {
          // CASE A: called with a text block one-off when exiting TLDR mode
         // Positions using scroll. Assumption is that this is not scroll event driven.
@@ -1172,12 +1174,13 @@ window.slides = (function(){
         y = window.scrollY + rect.top - window.scrub.midpoint + rect.height / 2;
         window.scrollTo(0, y);
       } else {
+        console.log("else");
+
         if (document.documentElement.classList.contains("tldr-mode")) {
           // CASE B: called directly with an active slide, with transforms muted by CSS on previous frame.
           // Seems to register without accounting for the border but that looks good
           y = rect.top - target.parentElement.getBoundingClientRect().top;
           window.scrollTo(0, y);
-          console.log("scrolled to " + y);
         }
       }
 
