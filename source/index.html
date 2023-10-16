@@ -1156,9 +1156,9 @@ window.slides = (function(){
     // A) scrolls text into view when exiting tldr mode
     // B) syncs the slide container with a transform after above, and normally when active slide changes 
     // C) when entering tldr mode it scrolls the active slide into view (transform on slide container should be zero'd)
-    
+    // && window.scrollY > threshold
 
-    if (target && target.parentElement && !window.matchMedia("(max-width: 670px)").matches && window.scrollY > threshold) {
+    if (target && target.parentElement && !window.matchMedia("(max-width: 670px)").matches) {
       // The page is scrolled past the threshold to snap the Slides (sticky).
       // Bring slide into focus area
       let rect = target.getBoundingClientRect();
