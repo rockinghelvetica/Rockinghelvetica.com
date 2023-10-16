@@ -1157,23 +1157,31 @@ window.slides = (function(){
     // B) syncs the slide container with a transform after above, and normally when active slide changes 
     // C) when entering tldr mode it scrolls the active slide into view (transform on slide container should be zero'd)
     // && window.scrollY > threshold
+    //target = document.querySelector('.slide[data-id="'+ target.dataset.id +'"]');
+        //rect = target.getBoundingClientRect();
 
     if (target && target.parentElement && !window.matchMedia("(max-width: 670px)").matches) {
       // The page is scrolled past the threshold to snap the Slides (sticky).
       // Bring slide into focus area
       let rect = target.getBoundingClientRect();
 
-      // CASE A: called with a text block one-off when exiting TLDR mode
       if (!this.root.contains(target)) {
+         // CASE A: called with a text block one-off when exiting TLDR mode
         // Positions using scroll. Assumption is that this is not scroll event driven.
         // The case text does not have transforms to account for in the math.
         y = window.scrollY + rect.top - window.scrub.midpoint + rect.height / 2;
         window.scrollTo(0, y);
-        // Redefine target to the slide & reprocess rect
-        // No error handling whee
-        //target = document.querySelector('.slide[data-id="'+ target.dataset.id +'"]');
-        //rect = target.getBoundingClientRect();
+      } else {
+        if (document.documentElement.classList.contains("tldr-mode")) {
+          // CASE B: called directly with an active slide, with transforms muted by CSS on previous frame.
+          y = window.scrollY + rect.top - window.scrub.midpoint + rect.height / 2;
+          window.scrollTo(0, y);
+        }
       }
+
+      // CASE B: when called after TLDR toggled ON
+      // it is deferred so the update should have zero'd transforms on the parent container
+      // using scroll not transforms to apply; the page is likely scrolled already
 
       // We always want to sync the slide strip, whether a paragraph or slide was passed
       // The slide is "centered" visually vertically with a negative transform
