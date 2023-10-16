@@ -1169,17 +1169,23 @@ window.slides = (function(){
          // CASE A: called with a text block one-off when exiting TLDR mode
         // Positions using scroll. Assumption is that this is not scroll event driven.
         // The case text does not have transforms to account for in the math.
-        console.log("extra bump? ", target.parentElement.getBoundingClientRect().top);
         y = window.scrollY + rect.top - window.scrub.midpoint + rect.height / 2;
         window.scrollTo(0, y);
       } else {
         if (document.documentElement.classList.contains("tldr-mode")) {
           // CASE B: called directly with an active slide, with transforms muted by CSS on previous frame.
-          y = window.scrollY + rect.top - window.scrub.midpoint + rect.height / 2;
-          y += target.parentElement.getBoundingClientRect().top;
+          // Seems to register without accounting for the border but that looks good
+          y = rect.top - target.parentElement.getBoundingClientRect().top;
           window.scrollTo(0, y);
         }
       }
+
+            //let y = rect.top - window.scrub.midpoint + rect.height / 2;
+
+      // let target = document.querySelector('.slide.active');
+      // let rect = target.getBoundingClientRect();
+      // let y = rect.top + window.scrub.midpoint + (rect.height / 2) - target.parentElement.getBoundingClientRect().top;
+      // window.scrollTo(0, y);
 
       // CASE B: when called after TLDR toggled ON
       // it is deferred so the update should have zero'd transforms on the parent container
