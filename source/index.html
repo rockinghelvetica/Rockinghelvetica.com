@@ -1147,6 +1147,7 @@ window.slides = (function(){
 
 
   function focus(target) {
+    // Create a pixel threshold for snapping at top
     let remInPixels = parseFloat(getComputedStyle(document.documentElement).fontSize);
     let threshold = 16 * remInPixels;
     let y = 0;
@@ -1162,33 +1163,36 @@ window.slides = (function(){
       // Bring slide into focus area
       let rect = target.getBoundingClientRect();
 
-      // Check if we are syncing position of slides (parent is this.root) or case text
+      // CASE A: called with a text block one-off when exiting TLDR mode
       if (!this.root.contains(target)) {
-        console.log("focus using text block");
-        // GOAL (A) -- WORKING
+        // Positions using scroll. Assumption is that this is not scroll event driven.
+        // The case text does not have transforms to account for in the math.
         y = window.scrollY + rect.top - window.scrub.midpoint + rect.height / 2;
         window.scrollTo(0, y);
-        this.root.style.transform = "";
         // Redefine target to the slide & reprocess rect
         // No error handling whee
-        target = document.querySelector('.slide[data-id="'+ target.dataset.id +'"]');
-        rect = target.getBoundingClientRect();
+        //target = document.querySelector('.slide[data-id="'+ target.dataset.id +'"]');
+        //rect = target.getBoundingClientRect();
       }
 
       // We always want to sync the slide strip, whether a paragraph or slide was passed
       // The slide is "centered" visually vertically with a negative transform
-      y = target.parentElement.getBoundingClientRect().top + window.scrollY;
-      y += (window.scrub.midpoint - rect.top - (rect.height/2));
-      console.log (`y is ${y}`);
+     // y = target.parentElement.getBoundingClientRect().top + window.scrollY;
+     // y += (window.scrub.midpoint - rect.top - (rect.height/2));
+      //console.log (`y is ${y}`);
       // the method to do this depends on TLDR mode
-      if (document.documentElement.classList.contains("tldr-mode")) {
+     // if (document.documentElement.classList.contains("tldr-mode")) {
         // assumption: focus is not called when in tldr-mode except as a one-time manual invocation immediately upon entering
-        console.log("scrolling into view");
-        window.scrollTo(0, y);
-      } else {
-        console.log("sync slides transform");
-        this.root.style.transform = "translate3d(0," + Math.min(y,0) + "px,0)";
-      }
+        //console.log("scrolling into view");
+       // window.scrollTo(0, y);
+      //} else {
+       // console.log("sync slides transform");
+      //   var rect = target.getBoundingClientRect(),
+      //     y = target.parentElement.getBoundingClientRect().top;
+     
+      // y += (1 * window.scrub.midpoint - rect.top - (rect.height/2));
+       // this.root.style.transform = "translate3d(0," + Math.min(y,0) + "px,0)";
+      //}
       
     } else {
       // The page is not scrolled past the threshold.
