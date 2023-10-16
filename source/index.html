@@ -1177,6 +1177,7 @@ window.slides = (function(){
           // Seems to register without accounting for the border but that looks good
           y = rect.top - target.parentElement.getBoundingClientRect().top;
           window.scrollTo(0, y);
+          console.log("scrolled to " + y);
         }
       }
 
