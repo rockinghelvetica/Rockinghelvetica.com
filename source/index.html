@@ -173,6 +173,7 @@ nav.actions {
   height: 5em;
   outline: none;
   background: #FFD750;
+  box-shadow: 0 10px 20px rgba(215,215,80,0.19), 0 6px 6px rgba(0,0,0,0.23);
 }
 
 #tldr:hover {
@@ -203,7 +204,8 @@ html:not(.tldr-mode) #tldr {
 }
 
 .active span {
-  background-position: 0.2em;
+  /* not sure why this was oringally indented tbh */
+  /* background-position: 0.2em; */
   background-size: 0% 100%, 100% 100%;
   background-image: linear-gradient(
   to bottom,
@@ -253,7 +255,7 @@ p {
   box-sizing: border-box;
   left: 0;
   width: 30vw;
-  /* transition: transform 0.5s ease-in; */
+  transform 0.35s ease-in-out;
 }
 
 #slides .scrollable {
@@ -340,6 +342,9 @@ html.tldr-mode #slides .scrollable .aspect-complement {
 html.tldr-mode #sticky-container,
 html.tldr-mode #slides {
   width: calc(100vw - 2rem);
+  /* This keeps the transition from messing up the manual sync moving between TLDR states */
+  transition: none;
+  transition-delay: 0ms;
 }
 
 .tldr-mode #slides .scrollable:after {
@@ -451,7 +456,17 @@ when snapped there is a 1rem margin I can't explain except that maybe in the pas
 the elements did something else with the border? Like it always had a border 
 and then i took it off later? AHHHH. Desktop learned about landscape orientation!
 
-*/
+Changed the top to be 0 because we were seeing a gap on desktop new since 2018 
+Also seems like the portrait typesetting was regrettable, removed
+
+ @media (min-width: 670px) {
+  html:not(.tldr-mode) #slides.snapped {
+    position: fixed;
+    top: 0rem;
+    left: 1rem;
+    transition: transform 0.5s ease-in;
+  }
+}
 
 @media (orientation: portrait) {
   h1 {
@@ -459,15 +474,7 @@ and then i took it off later? AHHHH. Desktop learned about landscape orientation
   }
 }
 
-/* Changed the top to be 0 because we were seeing a gap on desktop new since 2018 */
-/* @media (min-width: 670px) {
-  html:not(.tldr-mode) #slides.snapped {
-    position: fixed;
-    top: 0rem;
-    left: 1rem;
-    transition: transform 0.5s ease-in;
-  }
-} */
+*/
 
 
 /* Mobile sizes */
@@ -479,6 +486,14 @@ and then i took it off later? AHHHH. Desktop learned about landscape orientation
   
   main {
     padding: 0;
+  }
+
+  #sticky-container {
+    position: inherit;
+    top: auto;
+    align-self: flex-start;
+    width: auto;
+    transition: none;
   }
   
   h1 {
@@ -1151,6 +1166,7 @@ window.slides = (function(){
     let remInPixels = parseFloat(getComputedStyle(document.documentElement).fontSize);
     let threshold = 16 * remInPixels;
     let y = 0;
+    let mobile = window.matchMedia("(max-width: 670px)").matches;
 
     // DOES THREE THINGS, where target is usually a slide but sometimes text
     // A) scrolls text into view when exiting tldr mode
@@ -1160,12 +1176,12 @@ window.slides = (function(){
     //target = document.querySelector('.slide[data-id="'+ target.dataset.id +'"]');
         //rect = target.getBoundingClientRect();
 
-    if (target && target.parentElement && !window.matchMedia("(max-width: 670px)").matches) {
+    if (target && target.parentElement) {
       // The page is scrolled past the threshold to snap the Slides (sticky).
       // Bring slide into focus area
       let rect = target.getBoundingClientRect();
 
-      if (!this.root.contains(target)) {
+      if (!this.root.contains(target) && !mobile) {
         // CASE A: called with a text block one-off when exiting TLDR mode
         // Positions using scroll. Assumption is that this is not scroll event driven.
         // The case text does not have transforms to account for in the math.
@@ -1185,7 +1201,7 @@ window.slides = (function(){
           // The slide is to be "centered" visually vertically with a negative transform
           y = target.parentElement.getBoundingClientRect().top + (window.scrub.midpoint - rect.top - (rect.height/2));
           // Skip the transform if the page is not scrolled past the threshold.
-          this.root.style.transform = (window.scrollY > threshold) ? "translate3d(0," + Math.min(y,0) + "px,0)" : "";
+          this.root.style.transform = (window.scrollY > threshold && !mobile) ? "translate3d(0," + Math.min(y,0) + "px,0)" : "";
         }
       } 
 
