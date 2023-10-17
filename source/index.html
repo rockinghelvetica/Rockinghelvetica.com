@@ -492,8 +492,13 @@ Also seems like the portrait typesetting was regrettable, removed
     position: inherit;
     top: auto;
     align-self: flex-start;
-    width: auto !important;
+    width: auto;
     transition: none;
+  }
+
+  html.tldr-mode #sticky-container,
+  html.tldr-mode #slides {
+    width: 100%;
   }
   
   h1 {
