@@ -255,7 +255,7 @@ p {
   box-sizing: border-box;
   left: 0;
   width: 30vw;
-  transform 0.35s ease-in-out;
+  transform: 0.35s ease-in-out;
 }
 
 #slides .scrollable {
@@ -281,10 +281,10 @@ p {
   opacity: 1;
 }
 
-#slides video[data-media-state] + img { 
+/* #slides video[data-media-state] + img {  */
   /* removed for css grid */
   /* display: none; */
-} 
+/* }  */
 
 .aspect-box {
   position: relative;
@@ -489,7 +489,7 @@ Also seems like the portrait typesetting was regrettable, removed
   }
 
   #sticky-container {
-    position: inherit;
+    position: unset;
     top: auto;
     align-self: flex-start;
     width: auto;
