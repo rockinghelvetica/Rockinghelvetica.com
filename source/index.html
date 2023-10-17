@@ -1563,14 +1563,11 @@ function main() {
       scrub.handleEvent = function(e) {
         return !rAF && (rAF = requestAnimationFrame( browse ));
       };
-      // scrub.target = slides.root.ownerDocument;
-      // Get the current slide
-      // let activeSlide = document.querySelector(".slide.active");
-      // Ensure the current slide is in view
-      // deferred to ensure the 
-      if (this.active) {
+      // when entering TLDR mode we manually invoke slide focus after the classList update
+      let activeSlide = document.querySelector(".slide.active");
+      if (activeSlide) {
         setTimeout(() => {
-          window.slides.focus(this.active);
+          window.slides.focus(activeSlide);
         }, 0);
       }
     }
